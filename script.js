@@ -3,7 +3,7 @@
 // @namespace    https://github.com/tdup-torn/userscripts
 // @version      4.0
 // @description  Full in-game War & Combat Advisor dashboard for Torn City. Powered by official TDup BSP stats, Fair Fight respect optimizer, weapon/armor audits, and target scouting.
-// @author       Rafay Javed
+// @author       Dexter
 // @match        https://www.torn.com/*
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setValue
