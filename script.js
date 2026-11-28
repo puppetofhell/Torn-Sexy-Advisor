@@ -1,28 +1,24 @@
 // ==UserScript==
 // @name         Torn War & Combat Advisor (All-In-One Edition)
 // @namespace    https://github.com/tdup-torn/userscripts
-// @version      0.1a
+// @version      4.0
 // @description  Full in-game War & Combat Advisor dashboard for Torn City. Powered by official TDup BSP stats, Fair Fight respect optimizer, weapon/armor audits, and target scouting.
-// @author       Dexter786
+// @author       Rafay Javed
 // @match        https://www.torn.com/*
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setValue
 // @grant        GM_getValue
-// @grant        unsafeWindow
 // @connect      api.torn.com
 // @connect      www.lol-manager.com
 // @connect      lol-manager.com
-// @connect      corsproxy.io
+// @noframes
 // @run-at       document-end
 // ==/UserScript==
 
 (function() {
     'use strict';
 
-    console.log('[TornWarAdvisor] Initializing All-in-One UserScript v3.4...');
-
-    // Resolve execution window
-    const targetWindow = typeof unsafeWindow !== 'undefined' ? unsafeWindow : window;
+    console.log('[TornWarAdvisor] Initializing All-in-One UserScript v4.0...');
 
     // 1. Inject Floating Launcher Button into Torn City UI
     function initLauncher() {
@@ -70,7 +66,7 @@
         // Header bar with Close button
         const topBar = document.createElement('div');
         topBar.setAttribute('style', 'padding: 12px 20px; background: #18181d; border-bottom: 1px solid #2e2e38; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; box-sizing: border-box;');
-        topBar.innerHTML = '<div style="display:flex; align-items:center; gap:10px;"><span style="font-size:18px; font-weight:bold; color:#ff9900;">⚔️ Torn War & Combat Advisor</span><span style="font-size:11px; background:#222; border:1px solid #444; border-radius:12px; padding:2px 8px; color:#aaa;">In-Game v3.5</span></div><button id="twa-close-btn" style="background: transparent; border: none; color: #aaa; font-size: 26px; font-weight: bold; cursor: pointer; line-height: 1; padding: 4px 8px;">&times;</button>';
+        topBar.innerHTML = '<div style="display:flex; align-items:center; gap:10px;"><span style="font-size:18px; font-weight:bold; color:#ff9900;">⚔️ Torn War & Combat Advisor</span><span style="font-size:11px; background:#222; border:1px solid #444; border-radius:12px; padding:2px 8px; color:#aaa;">In-Game v4.0</span></div><button id="twa-close-btn" style="background: transparent; border: none; color: #aaa; font-size: 26px; font-weight: bold; cursor: pointer; line-height: 1; padding: 4px 8px;">&times;</button>';
 
         const scrollContent = document.createElement('div');
         scrollContent.id = 'twa-scroll-content';
@@ -116,7 +112,7 @@
 
     const TWA_EMBEDDED_CSS = "#twa-modal-overlay { --bg-dark: #121214;\n            --card-bg: #1e1e24;\n            --border-color: #2e2e38;\n            --accent-orange: #ff9900;\n            --accent-green: #4caf50;\n            --accent-red: #f44336;\n            --accent-blue: #2196f3;\n            --accent-purple: #9c27b0;\n            --text-main: #f0f0f5;\n            --text-muted: #9595a5; }\r\n#twa-modal-overlay .container { width: 100%;\n            max-width: 950px; }\r\n#twa-modal-overlay .header { text-align: center;\n            margin-bottom: 25px; }\r\n#twa-modal-overlay .header h1 { color: var(--accent-orange);\n            margin: 0 0 8px 0;\n            font-size: 26px; }\r\n#twa-modal-overlay .header p { color: var(--text-muted);\n            margin: 0;\n            font-size: 14px; }\r\n#twa-modal-overlay .api-card { background: var(--card-bg);\n            border: 1px solid var(--border-color);\n            border-radius: 10px;\n            padding: 20px;\n            margin-bottom: 25px;\n            box-shadow: 0 4px 15px rgba(0,0,0,0.4);\n            display: flex;\n            gap: 10px;\n            flex-wrap: wrap; }\r\n#twa-modal-overlay .api-input { flex-grow: 1;\n            background: #141418;\n            border: 1px solid #3e3e4a;\n            color: #fff;\n            padding: 12px 16px;\n            border-radius: 6px;\n            font-size: 14px;\n            letter-spacing: 1px;\n            outline: none; }\r\n#twa-modal-overlay .api-input:focus { border-color: var(--accent-orange); }\r\n#twa-modal-overlay .btn-analyze { background: var(--accent-orange);\n            color: #000;\n            border: none;\n            padding: 12px 24px;\n            font-weight: bold;\n            font-size: 14px;\n            border-radius: 6px;\n            cursor: pointer;\n            transition: 0.2s; }\r\n#twa-modal-overlay .btn-analyze:hover { opacity: 0.9;\n            transform: translateY(-1px); }\r\n#twa-modal-overlay #results { display: none; }\r\n#twa-modal-overlay .grid { display: grid;\n            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));\n            gap: 15px;\n            margin-bottom: 20px; }\r\n#twa-modal-overlay .card { background: var(--card-bg);\n            border: 1px solid var(--border-color);\n            border-radius: 10px;\n            padding: 18px;\n            box-shadow: 0 4px 12px rgba(0,0,0,0.3); }\r\n#twa-modal-overlay .card-title { font-size: 13px;\n            text-transform: uppercase;\n            letter-spacing: 0.5px;\n            color: var(--text-muted);\n            margin-bottom: 10px;\n            display: flex;\n            justify-content: space-between; }\r\n#twa-modal-overlay .card-value { font-size: 22px;\n            font-weight: bold;\n            margin-bottom: 5px; }\r\n#twa-modal-overlay .badge { display: inline-block;\n            padding: 4px 10px;\n            border-radius: 20px;\n            font-size: 12px;\n            font-weight: bold;\n            text-transform: uppercase; }\r\n#twa-modal-overlay .badge-rogue { background: #9c27b0; color: #fff; }\r\n#twa-modal-overlay .badge-tank { background: #2196f3; color: #fff; }\r\n#twa-modal-overlay .badge-balanced { background: #4caf50; color: #fff; }\r\n#twa-modal-overlay .badge-glass { background: #f44336; color: #fff; }\r\n#twa-modal-overlay .stat-bar-container { margin: 10px 0; }\r\n#twa-modal-overlay .stat-label { display: flex;\n            justify-content: space-between;\n            font-size: 12px;\n            margin-bottom: 4px; }\r\n#twa-modal-overlay .stat-progress { height: 8px;\n            background: #2a2a35;\n            border-radius: 4px;\n            overflow: hidden; }\r\n#twa-modal-overlay .stat-fill { height: 100%;\n            border-radius: 4px; }\r\n#twa-modal-overlay .fill-str { background: #f44336; }\r\n#twa-modal-overlay .fill-def { background: #2196f3; }\r\n#twa-modal-overlay .fill-spd { background: #ff9800; }\r\n#twa-modal-overlay .fill-dex { background: #9c27b0; }\r\n#twa-modal-overlay .ratio-box { background: #16161c;\n            border: 1px solid #2e2e38;\n            border-radius: 8px;\n            padding: 14px;\n            margin-top: 15px;\n            font-size: 13px; }\r\n#twa-modal-overlay .ratio-pill { display: inline-block;\n            background: #23232e;\n            padding: 4px 10px;\n            border-radius: 4px;\n            font-family: monospace;\n            font-weight: bold;\n            color: var(--accent-orange);\n            margin: 3px 0; }\r\n#twa-modal-overlay .goal-selector-card { background: #17171d;\n            border: 1px solid var(--border-color);\n            border-radius: 10px;\n            padding: 18px;\n            margin-bottom: 20px; }\r\n#twa-modal-overlay .goal-selector-card select { width: 100%;\n            padding: 11px 14px;\n            background: #23232c;\n            color: #fff;\n            border: 1px solid #444;\n            border-radius: 6px;\n            font-size: 14px;\n            outline: none;\n            margin-top: 8px;\n            cursor: pointer; }\r\n#twa-modal-overlay .goal-selector-card select:focus { border-color: var(--accent-orange); }\r\n#twa-modal-overlay .advice-box { background: var(--card-bg);\n            border: 1px solid var(--border-color);\n            border-radius: 10px;\n            padding: 20px;\n            margin-bottom: 20px; }\r\n#twa-modal-overlay .advice-box h3 { margin-top: 0;\n            color: var(--accent-orange);\n            font-size: 16px;\n            display: flex;\n            align-items: center;\n            gap: 8px; }\r\n#twa-modal-overlay .advice-item { margin-bottom: 12px;\n            padding-left: 15px;\n            border-left: 3px solid var(--accent-orange);\n            font-size: 13px;\n            line-height: 1.5; }\r\n#twa-modal-overlay .advice-item.warning { border-left-color: var(--accent-red); }\r\n#twa-modal-overlay .advice-item.success { border-left-color: var(--accent-green); }\r\n#twa-modal-overlay .advice-item strong { color: #fff; }\r\n#twa-modal-overlay .defend-explainer { background: #16161b;\n            padding: 14px;\n            border-radius: 6px;\n            font-size: 12px;\n            color: #b0b0c0;\n            line-height: 1.6;\n            margin-top: 10px;\n            border: 1px dashed #3a3a48; }\r\n#twa-modal-overlay .gear-grid { display: grid;\n            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));\n            gap: 10px;\n            margin-top: 10px; }\r\n#twa-modal-overlay .gear-item { background: #15151a;\n            border: 1px solid #2c2c36;\n            border-radius: 6px;\n            padding: 10px 12px;\n            font-size: 12px; }\r\n#twa-modal-overlay .gear-item.rarity-yellow { border-left: 3px solid #fdd835; }\r\n#twa-modal-overlay .gear-item.rarity-orange { border-left: 3px solid #fb8c00; }\r\n#twa-modal-overlay .gear-item.rarity-red { border-left: 3px solid #e53935; }\r\n#twa-modal-overlay .gear-name { font-weight: bold;\n            color: #fff;\n            font-size: 13px;\n            margin-bottom: 3px; }\r\n#twa-modal-overlay .gear-meta { color: var(--text-muted);\n            font-size: 11px;\n            line-height: 1.4; }\r\n#twa-modal-overlay .gear-bonus { color: var(--accent-orange);\n            font-weight: 500;\n            margin-top: 3px;\n            font-size: 11px; }\r\n#twa-modal-overlay .alert-banner { padding: 10px 14px;\n            border-radius: 6px;\n            font-size: 12px;\n            margin-bottom: 15px;\n            display: flex;\n            align-items: center;\n            gap: 10px; }\r\n#twa-modal-overlay .alert-warning { background: rgba(244, 67, 54, 0.15);\n            border: 1px solid var(--accent-red);\n            color: #ff8a80; }\r\n#twa-modal-overlay .alert-info { background: rgba(33, 150, 243, 0.15);\n            border: 1px solid var(--accent-blue);\n            color: #90caf9; }\r\n#twa-modal-overlay .loading-spinner { text-align: center;\n            padding: 40px;\n            font-size: 16px;\n            color: var(--text-muted);\n            display: none; }\r\n#twa-modal-overlay /* Modern Tabs Navigation */\n        .tab-bar { display: flex;\n            gap: 8px;\n            margin: 20px 0 16px 0;\n            border-bottom: 2px solid #2e2e38;\n            padding-bottom: 2px;\n            overflow-x: auto; }\r\n#twa-modal-overlay .tab-btn { background: #17171d;\n            border: 1px solid #33333f;\n            border-bottom: none;\n            color: #aaa;\n            padding: 10px 18px;\n            font-size: 13px;\n            font-weight: bold;\n            border-radius: 8px 8px 0 0;\n            cursor: pointer;\n            transition: all 0.2s ease;\n            white-space: nowrap;\n            display: flex;\n            align-items: center;\n            gap: 6px; }\r\n#twa-modal-overlay .tab-btn:hover { color: #fff;\n            background: #22222c; }\r\n#twa-modal-overlay .tab-btn.active { background: var(--card-bg);\n            color: var(--accent-orange);\n            border-color: var(--accent-orange);\n            border-bottom: 2px solid var(--card-bg);\n            margin-bottom: -2px; }\r\n#twa-modal-overlay .tab-content { display: none; }\r\n#twa-modal-overlay .tab-content.active { display: block; }\r\n";
 
-    const TWA_EMBEDDED_HTML = "\u003cdiv class=\"container\"\u003e\n    \u003cdiv class=\"header\"\u003e\n        \u003ch1\u003e⚔️ Torn War Readiness \u0026 Combat Advisor\u003c/h1\u003e\n        \u003cp\u003e10/10 Ranked War Optimizer: Gear, Special Ammo, Merit Re-specs, Recent 100 Hits Audit \u0026 Baldr/Hank Ratios.\u003c/p\u003e\n    \u003c/div\u003e\n\n    \u003cdiv class=\"api-card\"\u003e\n        \u003cinput type=\"text\" id=\"apiKeyInput\" class=\"api-input\" placeholder=\"Paste 16-character Torn API Key...\" autocomplete=\"off\"\u003e\n        \u003cbutton id=\"analyzeBtn\" class=\"btn-analyze\" onclick=\"startAnalysis()\"\u003eAnalyze Combat Profile\u003c/button\u003e\n    \u003c/div\u003e\n\n    \u003cdiv id=\"loading\" class=\"loading-spinner\"\u003eAuditing war stats, API v2 equipment, special ammo, merits, and last 100 attacks...\u003c/div\u003e\n\n    \u003cdiv id=\"results\"\u003e\n        \u003c!-- Profile Overview Action Bar --\u003e\n        \u003cdiv style=\"display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:12px; flex-wrap:wrap;\"\u003e\n            \u003c!-- Quick Next Buy Recommendation Card --\u003e\n            \u003cdiv id=\"quickNextBuyCard\" style=\"flex:1; min-width:280px; background:#1b1b22; border:1px solid #363644; border-radius:8px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);\"\u003e\n                \u003cdiv style=\"display:flex; align-items:center; gap:10px;\"\u003e\n                    \u003cdiv style=\"font-size:22px;\" id=\"nextBuyIcon\"\u003e🛒\u003c/div\u003e\n                    \u003cdiv\u003e\n                        \u003cdiv style=\"font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:#9595a5;\"\u003eRecommended Next Buy\u003c/div\u003e\n                        \u003cdiv id=\"nextBuyTitle\" style=\"font-size:13px; font-weight:bold; color:#fff;\"\u003eAnalyzing profile...\u003c/div\u003e\n                    \u003c/div\u003e\n                \u003c/div\u003e\n                \u003cdiv id=\"nextBuyTag\" style=\"background:var(--accent-orange); color:#000; font-size:11px; font-weight:bold; padding:4px 10px; border-radius:20px; white-space:nowrap;\"\u003e\n                    Value: Evaluating\n                \u003c/div\u003e\n            \u003c/div\u003e\n\n            \u003c!-- Discord War Card Copy Button --\u003e\n            \u003cbutton onclick=\"copyDiscordSummary()\" style=\"background:#5865F2; color:#fff; border:none; padding:11px 18px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:13px; height:100%; white-space:nowrap; display:flex; align-items:center; gap:6px;\"\u003e\n                📋 Copy War Card for Discord\n            \u003c/button\u003e\n        \u003c/div\u003e\n        \u003cdiv class=\"grid\"\u003e\n            \u003cdiv class=\"card\"\u003e\n                \u003cdiv class=\"card-title\"\u003eCombat Identity\u003c/div\u003e\n                \u003cdiv class=\"card-value\" id=\"playerName\"\u003e-\u003c/div\u003e\n                \u003cdiv id=\"archetypeBadge\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n            \u003cdiv class=\"card\"\u003e\n                \u003cdiv class=\"card-title\"\u003eTotal Battle Stats\u003c/div\u003e\n                \u003cdiv class=\"card-value\" id=\"totalStatsDisplay\" style=\"color: var(--accent-orange);\"\u003e-\u003c/div\u003e\n                \u003cdiv id=\"seThreshold\" style=\"font-size: 12px; color: var(--text-muted);\"\u003eSE Threshold: Calculating...\u003c/div\u003e\n            \u003c/div\u003e\n            \u003cdiv class=\"card\"\u003e\n                \u003cdiv class=\"card-title\"\u003eCareer Defend Rate\u003c/div\u003e\n                \u003cdiv class=\"card-value\" id=\"defendRateDisplay\"\u003e-\u003c/div\u003e\n                \u003cdiv id=\"defendStatus\" style=\"font-size: 12px;\"\u003eEvaluating...\u003c/div\u003e\n            \u003c/div\u003e\n            \u003cdiv class=\"card\"\u003e\n                \u003cdiv class=\"card-title\"\u003eRecent 100 War Hits\u003c/div\u003e\n                \u003cdiv class=\"card-value\" id=\"recentWarRateDisplay\" style=\"color: var(--accent-blue);\"\u003e-\u003c/div\u003e\n                \u003cdiv id=\"recentWarStatus\" style=\"font-size: 12px;\"\u003eAnalyzing attacks...\u003c/div\u003e\n            \u003c/div\u003e\n        \u003c/div\u003e\n\n        \u003c!-- Career Defend Explainer Box --\u003e\n        \u003cdiv class=\"card\" style=\"margin-bottom: 20px;\"\u003e\n            \u003cdiv class=\"card-title\"\u003eDefend Win Rate Breakdown \u0026 Explanation\u003c/div\u003e\n            \u003cdiv class=\"defend-explainer\" id=\"defendExplainerText\"\u003e\n                Loading career defend analysis...\n            \u003c/div\u003e\n        \u003c/div\u003e\n\n        \u003c!-- Stat Distribution \u0026 Current Ratio Card --\u003e\n        \u003cdiv class=\"card\" style=\"margin-bottom: 20px;\"\u003e\n            \u003cdiv class=\"card-title\"\u003eCurrent Battle Stats \u0026 Ratio Breakdown\u003c/div\u003e\n            \u003cdiv class=\"stat-bar-container\"\u003e\n                \u003cdiv class=\"stat-label\"\u003e\u003cspan\u003eStrength\u003c/span\u003e\u003cb id=\"strVal\"\u003e-\u003c/b\u003e\u003c/div\u003e\n                \u003cdiv class=\"stat-progress\"\u003e\u003cdiv id=\"strBar\" class=\"stat-fill fill-str\" style=\"width: 25%\"\u003e\u003c/div\u003e\u003c/div\u003e\n            \u003c/div\u003e\n            \u003cdiv class=\"stat-bar-container\"\u003e\n                \u003cdiv class=\"stat-label\"\u003e\u003cspan\u003eDefense\u003c/span\u003e\u003cb id=\"defVal\"\u003e-\u003c/b\u003e\u003c/div\u003e\n                \u003cdiv class=\"stat-progress\"\u003e\u003cdiv id=\"defBar\" class=\"stat-fill fill-def\" style=\"width: 25%\"\u003e\u003c/div\u003e\u003c/div\u003e\n            \u003c/div\u003e\n            \u003cdiv class=\"stat-bar-container\"\u003e\n                \u003cdiv class=\"stat-label\"\u003e\u003cspan\u003eSpeed\u003c/span\u003e\u003cb id=\"spdVal\"\u003e-\u003c/b\u003e\u003c/div\u003e\n                \u003cdiv class=\"stat-progress\"\u003e\u003cdiv id=\"spdBar\" class=\"stat-fill fill-spd\" style=\"width: 25%\"\u003e\u003c/div\u003e\u003c/div\u003e\n            \u003c/div\u003e\n            \u003cdiv class=\"stat-bar-container\"\u003e\n                \u003cdiv class=\"stat-label\"\u003e\u003cspan\u003eDexterity\u003c/span\u003e\u003cb id=\"dexVal\"\u003e-\u003c/b\u003e\u003c/div\u003e\n                \u003cdiv class=\"stat-progress\"\u003e\u003cdiv id=\"dexBar\" class=\"stat-fill fill-dex\" style=\"width: 25%\"\u003e\u003c/div\u003e\u003c/div\u003e\n            \u003c/div\u003e\n\n            \u003cdiv class=\"ratio-box\" id=\"currentRatioBox\"\u003e\n                Loading ratio analysis...\n            \u003c/div\u003e\n        \u003c/div\u003e\n\n        \u003c!-- 5-Tab Navigation System for Clean Readability --\u003e\n        \u003cdiv class=\"tab-bar\"\u003e\n            \u003cbutton class=\"tab-btn active\" id=\"tabBtn-war\" onclick=\"switchTwaTab(\u0027war\u0027)\"\u003e⚔️ War \u0026 Targets\u003c/button\u003e\n            \u003cbutton class=\"tab-btn\" id=\"tabBtn-gym\" onclick=\"switchTwaTab(\u0027gym\u0027)\"\u003e🏋️ Gym \u0026 Build (GymIQ)\u003c/button\u003e\n            \u003cbutton class=\"tab-btn\" id=\"tabBtn-gear\" onclick=\"switchTwaTab(\u0027gear\u0027)\"\u003e🎒 Gear \u0026 Loadout\u003c/button\u003e\n            \u003cbutton class=\"tab-btn\" id=\"tabBtn-merits\" onclick=\"switchTwaTab(\u0027merits\u0027)\"\u003e🎖️ Merits \u0026 Discipline\u003c/button\u003e\n            \u003cbutton class=\"tab-btn\" id=\"tabBtn-economy\" onclick=\"switchTwaTab(\u0027economy\u0027)\"\u003e💰 Economy \u0026 Networth\u003c/button\u003e\n        \u003c/div\u003e\n\n        \u003c!-- ==================== TAB 1: WAR \u0026 TARGETS ==================== --\u003e\n        \u003cdiv id=\"tab-war\" class=\"tab-content active\"\u003e\n            \u003c!-- Active War Targets \u0026 Doable FF Roster Scanner --\u003e\n            \u003cdiv class=\"advice-box\" style=\"border-color: var(--accent-orange); background: #13131a;\"\u003e\n                \u003cdiv style=\"display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;\"\u003e\n                    \u003cdiv\u003e\n                        \u003ch3 style=\"margin:0; color:var(--accent-orange);\"\u003e⚔️ Active Ranked War Target Scanner (Best Fair Fight \u0026 Respect Farm)\u003c/h3\u003e\n                        \u003cdiv style=\"font-size:12px; color:#aaa; margin-top:4px;\"\u003e\n                            Scans the enemy faction roster in your active Ranked War, computes predicted stats via BSP, and sorts targets by \u003cstrong\u003eOptimal Fair Fight (FF) \u0026 Respect Yield\u003c/strong\u003e.\n                        \u003c/div\u003e\n                    \u003c/div\u003e\n                    \u003cbutton onclick=\"scanActiveWarRoster()\" class=\"btn-analyze\" style=\"background:var(--accent-orange); color:#000; font-weight:bold; padding:8px 18px; border-radius:6px; cursor:pointer;\"\u003e\n                        🔄 Scan War Targets\n                    \u003c/button\u003e\n                \u003c/div\u003e\n                \u003cdiv id=\"warScanStatus\" style=\"margin-top:12px; font-size:12px; color:#ccc;\"\u003e\n                    Click \u003cstrong\u003e\"Scan War Targets\"\u003c/strong\u003e to detect your active war and rank enemy faction members by farmability.\n                \u003c/div\u003e\n                \u003cdiv id=\"warRosterContainer\" style=\"margin-top:12px; overflow-x:auto;\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n\n            \u003c!-- Enemy Target Spy / Quick Compare --\u003e\n            \u003cdiv class=\"advice-box\" style=\"border-color: var(--accent-blue);\"\u003e\n                \u003cdiv style=\"display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;\"\u003e\n                    \u003ch3 style=\"margin:0;\"\u003e🎯 Enemy Target Scout (BSP Stat Predictor Engine)\u003c/h3\u003e\n                    \u003cdiv style=\"display:flex; gap:6px;\"\u003e\n                        \u003cspan id=\"bspBridgeBadge\" class=\"badge\" style=\"background:#222; color:#aaa; border:1px solid #444; font-size:10px;\"\u003eChecking BSP Bridge...\u003c/span\u003e\n                        \u003cspan class=\"badge\" style=\"background:var(--accent-orange); color:#000; font-size:10px;\"\u003eTDup Machine Model\u003c/span\u003e\n                    \u003c/div\u003e\n                \u003c/div\u003e\n                \u003cp style=\"font-size:12px; color:#aaa; margin:6px 0 12px 0;\"\u003e\n                    Enter an enemy Torn User ID to calculate or pull their \u003cstrong\u003ePredicted Total Battle Stats (TBS)\u003c/strong\u003e directly from your installed BSP userscript cache or mathematical energy model:\n                \u003c/p\u003e\n                \u003cdiv style=\"display:flex; gap:10px; margin-bottom:8px;\"\u003e\n                    \u003cinput type=\"text\" id=\"enemyIdInput\" class=\"api-input\" placeholder=\"Enemy Torn ID (e.g. 2899019)\" style=\"padding:10px 14px; flex:1;\"\u003e\n                    \u003cbutton onclick=\"scoutEnemy()\" class=\"btn-analyze\" style=\"background:var(--accent-blue); color:#fff; padding:10px 20px;\"\u003eScout \u0026 Predict Stats\u003c/button\u003e\n                \u003c/div\u003e\n                \u003cdiv id=\"bspBridgeStatus\" style=\"font-size:11px; color:#888; margin-bottom:8px;\"\u003e\u003c/div\u003e\n                \u003cdiv id=\"enemyScoutResult\" style=\"font-size:13px; color:#ddd;\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n        \u003c/div\u003e\n\n        \u003c!-- ==================== TAB 2: GYM \u0026 BUILD (GYMIQ) ==================== --\u003e\n        \u003cdiv id=\"tab-gym\" class=\"tab-content\"\u003e\n            \u003c!-- Target Goal Selector with GymIQ Standards --\u003e\n            \u003cdiv class=\"goal-selector-card\"\u003e\n                \u003cdiv style=\"display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;\"\u003e\n                    \u003cdiv style=\"font-weight: bold; font-size: 14px; color: var(--accent-orange);\"\u003e🎯 Select Your Combat \u0026 Gym Target Ratio:\u003c/div\u003e\n                    \u003cspan class=\"badge\" style=\"background:#ff9900; color:#000; font-size:10px;\"\u003e⚡ Powered by GymIQ Standards\u003c/span\u003e\n                \u003c/div\u003e\n                \u003cdiv style=\"font-size: 12px; color: var(--text-muted); margin-top: 4px;\"\u003e\n                    Calculates exact stat targets, deficits, gym unlocks, and live \u003cstrong\u003eGymIQ \"Train Next\"\u003c/strong\u003e recommendations:\n                \u003c/div\u003e\n                \u003cselect id=\"goalSelector\" onchange=\"updateGoalRoadmap()\"\u003e\n                    \u003coptgroup label=\"⚖️ Baldr\u0027s Specialist \u0026 Whore Ratios (100 Primary : 80 Secondary : 72 : 72)\"\u003e\n                        \u003coption value=\"baldr_dex\"\u003e💨 Baldr\u0027s Dex Whore (100 Dex : 80 Spd : 72 Str : 72 Def — The Elites + Frontline)\u003c/option\u003e\n                        \u003coption value=\"baldr_def\"\u003e🛡️ Baldr\u0027s Defense Tank (100 Def : 80 Str : 72 Spd : 72 Dex — Isoyama + Frontline)\u003c/option\u003e\n                        \u003coption value=\"baldr_str\"\u003e🏋️ Baldr\u0027s Strength Whore (100 Str : 80 Def : 72 Dex : 72 Spd — Gym 3000 + Balboa\u0027s)\u003c/option\u003e\n                        \u003coption value=\"baldr_spd\"\u003e⚡ Baldr\u0027s Speed Whore (100 Spd : 80 Def : 72 Dex : 72 Str — Total Rebound + Balboa\u0027s)\u003c/option\u003e\n                        \u003coption value=\"baldr_ratio\"\u003e⚖️ Baldr\u0027s Auto-Balanced (Auto-Pick Top 2 Stats as Primary \u0026 Secondary)\u003c/option\u003e\n                        \u003coption value=\"pure_balanced\"\u003e🛡️ Pure Balanced Titan (1 : 1 : 1 : 1 — Equal 25% All Stats)\u003c/option\u003e\n                    \u003c/optgroup\u003e\n                    \u003coptgroup label=\"🔥 Hank\u0027s Extreme Specialist Ratios (100 : 80 : 80 : 28 Max Dump)\"\u003e\n                        \u003coption value=\"hank_dex\"\u003e💨 Hank\u0027s Dex Whore (100 Dex : 80 Spd : 80 Str : 28 Def Dump)\u003c/option\u003e\n                        \u003coption value=\"hank_def\"\u003e🛡️ Hank\u0027s Defense Tank (100 Def : 80 Str : 80 Spd : 28 Dex Dump)\u003c/option\u003e\n                        \u003coption value=\"hank_str\"\u003e🏋️ Hank\u0027s Strength Whore (100 Str : 80 Def : 80 Dex : 28 Spd Dump)\u003c/option\u003e\n                        \u003coption value=\"hank_spd\"\u003e⚡ Hank\u0027s Speed Demon (100 Spd : 80 Def : 80 Dex : 28 Str Dump)\u003c/option\u003e\n                    \u003c/optgroup\u003e\n                    \u003coptgroup label=\"🚀 GymIQ Late-Game Scaling\"\u003e\n                        \u003coption value=\"se_rush\"\u003e🚀 Stat Enhancer (SE) Rush: Fast-Track 1.5B in Highest Stat\u003c/option\u003e\n                    \u003c/optgroup\u003e\n                \u003c/select\u003e\n            \u003c/div\u003e\n\n            \u003c!-- Target Goal Strategy Roadmap --\u003e\n            \u003cdiv class=\"advice-box\" id=\"goalRoadmapBox\" style=\"border: 2px solid var(--accent-orange);\"\u003e\n                \u003ch3 id=\"goalTitle\"\u003e🎯 Calculated Gym Ratio \u0026 Roadmap\u003c/h3\u003e\n                \u003cdiv id=\"gymUnlockBanner\"\u003e\u003c/div\u003e\n                \u003cdiv id=\"goalAdvice\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n\n            \u003c!-- Training Progression Economy: Happy Jumps vs Energy Cans vs Stat Enhancers (SE) --\u003e\n            \u003cdiv class=\"advice-box\" style=\"border: 2px solid var(--accent-orange); background: #15151c;\"\u003e\n                \u003cdiv style=\"display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;\"\u003e\n                    \u003ch3 style=\"margin:0; color:var(--accent-orange);\"\u003e⚡ Training Progression Economy: Happy Jumps, Energy Cans \u0026 Stat Enhancers\u003c/h3\u003e\n                    \u003cspan class=\"badge\" style=\"background:#ff9900; color:#000;\"\u003eFull Lifetime ROI Engine\u003c/span\u003e\n                \u003c/div\u003e\n                \u003cp style=\"font-size:12px; color:var(--text-muted); margin:8px 0 14px 0;\"\u003e\n                    Tailored for every stage of your Torn journey: Early-game \u003cstrong\u003eHappy Jumps (\u0026lt;400k-800k threshold)\u003c/strong\u003e, Mid-game \u003cstrong\u003e3x Xanax + Energy Cans (to 1.5B)\u003c/strong\u003e, and Late-game \u003cstrong\u003eStat Enhancers (1.5B+)\u003c/strong\u003e with exact cost-per-stat ($/gain) comparisons.\n                \u003c/p\u003e\n                \u003cdiv id=\"boosterRoiContainer\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n        \u003c/div\u003e\n\n        \u003c!-- ==================== TAB 3: GEAR \u0026 LOADOUT ==================== --\u003e\n        \u003cdiv id=\"tab-gear\" class=\"tab-content\"\u003e\n            \u003c!-- Equipped Gear \u0026 Ammo Audit Card --\u003e\n            \u003cdiv class=\"advice-box\"\u003e\n                \u003ch3\u003e🎒 Equipped Arsenal \u0026 Special Ammo (Live from API v2)\u003c/h3\u003e\n                \u003cdiv id=\"ammoAlertContainer\"\u003e\u003c/div\u003e\n                \u003cdiv id=\"equippedGearGrid\" class=\"gear-grid\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n\n            \u003c!-- Weapons Advice --\u003e\n            \u003cdiv class=\"advice-box\"\u003e\n                \u003ch3\u003e🎯 Weapon Mastery \u0026 Loadout Audit\u003c/h3\u003e\n                \u003cdiv id=\"weaponAdvice\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n\n            \u003c!-- General War \u0026 Defensive Advice --\u003e\n            \u003cdiv class=\"advice-box\"\u003e\n                \u003ch3\u003e🛡️ Armor \u0026 Next-Step Gear Upgrades\u003c/h3\u003e\n                \u003cdiv id=\"defenseAdvice\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n        \u003c/div\u003e\n\n        \u003c!-- ==================== TAB 4: MERITS \u0026 DISCIPLINE ==================== --\u003e\n        \u003cdiv id=\"tab-merits\" class=\"tab-content\"\u003e\n            \u003c!-- Recent Attacks \u0026 Chaining Audit --\u003e\n            \u003cdiv class=\"advice-box\"\u003e\n                \u003ch3\u003e⚔️ Recent 100 Attacks \u0026 Chaining Analysis\u003c/h3\u003e\n                \u003cdiv id=\"recentAttacksAdvice\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n\n            \u003c!-- Veteran War Prep \u0026 Discipline --\u003e\n            \u003cdiv class=\"advice-box\"\u003e\n                \u003ch3\u003e🎖️ Veteran War Prep \u0026 Discipline (Revives, Xanax \u0026 Hit Types)\u003c/h3\u003e\n                \u003cdiv id=\"veteranPrepAdvice\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n\n            \u003c!-- Education \u0026 Gym Courses Checklist --\u003e\n            \u003cdiv class=\"advice-box\"\u003e\n                \u003ch3\u003e🎓 Mandatory Combat \u0026 Gym Education Checklist\u003c/h3\u003e\n                \u003cdiv id=\"educationAdvice\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n\n            \u003c!-- Merits \u0026 Perk Optimization --\u003e\n            \u003cdiv class=\"advice-box\"\u003e\n                \u003ch3\u003e✨ Merits \u0026 Combat Perks Audit\u003c/h3\u003e\n                \u003cdiv id=\"meritsAdvice\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n        \u003c/div\u003e\n\n        \u003c!-- ==================== TAB 5: ECONOMY \u0026 NETWORTH ==================== --\u003e\n        \u003cdiv id=\"tab-economy\" class=\"tab-content\"\u003e\n            \u003c!-- Networth, Stocks \u0026 Inventory Valuation --\u003e\n            \u003cdiv class=\"advice-box\"\u003e\n                \u003ch3\u003e🏦 Networth, Stocks \u0026 Inventory Valuation\u003c/h3\u003e\n                \u003cdiv id=\"networthBreakdown\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n        \u003c/div\u003e\n    \u003c/div\u003e\n\u003c/div\u003e";
+    const TWA_EMBEDDED_HTML = "\u003cdiv class=\"container\"\u003e\n    \u003cdiv class=\"header\"\u003e\n        \u003ch1\u003e⚔️ Torn War Readiness \u0026 Combat Advisor\u003c/h1\u003e\n        \u003cp\u003e10/10 Ranked War Optimizer: Gear, Special Ammo, Merit Re-specs, Recent 100 Hits Audit \u0026 Baldr/Hank Ratios.\u003c/p\u003e\n    \u003c/div\u003e\n\n    \u003cdiv class=\"api-card\"\u003e\n        \u003cinput type=\"password\" id=\"apiKeyInput\" class=\"api-input\" placeholder=\"Paste 16-character Torn API Key...\" autocomplete=\"off\"\u003e\n        \u003cbutton id=\"analyzeBtn\" class=\"btn-analyze\" onclick=\"startAnalysis()\"\u003eAnalyze Combat Profile\u003c/button\u003e\n    \u003c/div\u003e\n\n    \u003cdiv id=\"loading\" class=\"loading-spinner\"\u003eAuditing war stats, API v2 equipment, special ammo, merits, and last 100 attacks...\u003c/div\u003e\n\n    \u003cdiv id=\"results\"\u003e\n        \u003c!-- Profile Overview Action Bar --\u003e\n        \u003cdiv style=\"display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:12px; flex-wrap:wrap;\"\u003e\n            \u003c!-- Quick Next Buy Recommendation Card --\u003e\n            \u003cdiv id=\"quickNextBuyCard\" style=\"flex:1; min-width:280px; background:#1b1b22; border:1px solid #363644; border-radius:8px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);\"\u003e\n                \u003cdiv style=\"display:flex; align-items:center; gap:10px;\"\u003e\n                    \u003cdiv style=\"font-size:22px;\" id=\"nextBuyIcon\"\u003e🛒\u003c/div\u003e\n                    \u003cdiv\u003e\n                        \u003cdiv style=\"font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:#9595a5;\"\u003eRecommended Next Buy\u003c/div\u003e\n                        \u003cdiv id=\"nextBuyTitle\" style=\"font-size:13px; font-weight:bold; color:#fff;\"\u003eAnalyzing profile...\u003c/div\u003e\n                    \u003c/div\u003e\n                \u003c/div\u003e\n                \u003cdiv id=\"nextBuyTag\" style=\"background:var(--accent-orange); color:#000; font-size:11px; font-weight:bold; padding:4px 10px; border-radius:20px; white-space:nowrap;\"\u003e\n                    Value: Evaluating\n                \u003c/div\u003e\n            \u003c/div\u003e\n\n            \u003c!-- Discord War Card Copy Button --\u003e\n            \u003cbutton id=\"copyDiscordBtn\" style=\"background:#5865F2; color:#fff; border:none; padding:11px 18px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:13px; height:100%; white-space:nowrap; display:flex; align-items:center; gap:6px;\"\u003e\n                📋 Copy War Card for Discord\n            \u003c/button\u003e\n        \u003c/div\u003e\n        \u003cdiv class=\"grid\"\u003e\n            \u003cdiv class=\"card\"\u003e\n                \u003cdiv class=\"card-title\"\u003eCombat Identity\u003c/div\u003e\n                \u003cdiv class=\"card-value\" id=\"playerName\"\u003e-\u003c/div\u003e\n                \u003cdiv id=\"archetypeBadge\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n            \u003cdiv class=\"card\"\u003e\n                \u003cdiv class=\"card-title\"\u003eTotal Battle Stats\u003c/div\u003e\n                \u003cdiv class=\"card-value\" id=\"totalStatsDisplay\" style=\"color: var(--accent-orange);\"\u003e-\u003c/div\u003e\n                \u003cdiv id=\"seThreshold\" style=\"font-size: 12px; color: var(--text-muted);\"\u003eSE Threshold: Calculating...\u003c/div\u003e\n            \u003c/div\u003e\n            \u003cdiv class=\"card\"\u003e\n                \u003cdiv class=\"card-title\"\u003eCareer Defend Rate\u003c/div\u003e\n                \u003cdiv class=\"card-value\" id=\"defendRateDisplay\"\u003e-\u003c/div\u003e\n                \u003cdiv id=\"defendStatus\" style=\"font-size: 12px;\"\u003eEvaluating...\u003c/div\u003e\n            \u003c/div\u003e\n            \u003cdiv class=\"card\"\u003e\n                \u003cdiv class=\"card-title\"\u003eRecent 100 War Hits\u003c/div\u003e\n                \u003cdiv class=\"card-value\" id=\"recentWarRateDisplay\" style=\"color: var(--accent-blue);\"\u003e-\u003c/div\u003e\n                \u003cdiv id=\"recentWarStatus\" style=\"font-size: 12px;\"\u003eAnalyzing attacks...\u003c/div\u003e\n            \u003c/div\u003e\n        \u003c/div\u003e\n\n        \u003c!-- Career Defend Explainer Box --\u003e\n        \u003cdiv class=\"card\" style=\"margin-bottom: 20px;\"\u003e\n            \u003cdiv class=\"card-title\"\u003eDefend Win Rate Breakdown \u0026 Explanation\u003c/div\u003e\n            \u003cdiv class=\"defend-explainer\" id=\"defendExplainerText\"\u003e\n                Loading career defend analysis...\n            \u003c/div\u003e\n        \u003c/div\u003e\n\n        \u003c!-- Stat Distribution \u0026 Current Ratio Card --\u003e\n        \u003cdiv class=\"card\" style=\"margin-bottom: 20px;\"\u003e\n            \u003cdiv class=\"card-title\"\u003eCurrent Battle Stats \u0026 Ratio Breakdown\u003c/div\u003e\n            \u003cdiv class=\"stat-bar-container\"\u003e\n                \u003cdiv class=\"stat-label\"\u003e\u003cspan\u003eStrength\u003c/span\u003e\u003cb id=\"strVal\"\u003e-\u003c/b\u003e\u003c/div\u003e\n                \u003cdiv class=\"stat-progress\"\u003e\u003cdiv id=\"strBar\" class=\"stat-fill fill-str\" style=\"width: 25%\"\u003e\u003c/div\u003e\u003c/div\u003e\n            \u003c/div\u003e\n            \u003cdiv class=\"stat-bar-container\"\u003e\n                \u003cdiv class=\"stat-label\"\u003e\u003cspan\u003eDefense\u003c/span\u003e\u003cb id=\"defVal\"\u003e-\u003c/b\u003e\u003c/div\u003e\n                \u003cdiv class=\"stat-progress\"\u003e\u003cdiv id=\"defBar\" class=\"stat-fill fill-def\" style=\"width: 25%\"\u003e\u003c/div\u003e\u003c/div\u003e\n            \u003c/div\u003e\n            \u003cdiv class=\"stat-bar-container\"\u003e\n                \u003cdiv class=\"stat-label\"\u003e\u003cspan\u003eSpeed\u003c/span\u003e\u003cb id=\"spdVal\"\u003e-\u003c/b\u003e\u003c/div\u003e\n                \u003cdiv class=\"stat-progress\"\u003e\u003cdiv id=\"spdBar\" class=\"stat-fill fill-spd\" style=\"width: 25%\"\u003e\u003c/div\u003e\u003c/div\u003e\n            \u003c/div\u003e\n            \u003cdiv class=\"stat-bar-container\"\u003e\n                \u003cdiv class=\"stat-label\"\u003e\u003cspan\u003eDexterity\u003c/span\u003e\u003cb id=\"dexVal\"\u003e-\u003c/b\u003e\u003c/div\u003e\n                \u003cdiv class=\"stat-progress\"\u003e\u003cdiv id=\"dexBar\" class=\"stat-fill fill-dex\" style=\"width: 25%\"\u003e\u003c/div\u003e\u003c/div\u003e\n            \u003c/div\u003e\n\n            \u003cdiv class=\"ratio-box\" id=\"currentRatioBox\"\u003e\n                Loading ratio analysis...\n            \u003c/div\u003e\n        \u003c/div\u003e\n\n        \u003c!-- 5-Tab Navigation System for Clean Readability --\u003e\n        \u003cdiv class=\"tab-bar\"\u003e\n            \u003cbutton class=\"tab-btn active\" id=\"tabBtn-war\" onclick=\"switchTwaTab(\u0027war\u0027)\"\u003e⚔️ War \u0026 Targets\u003c/button\u003e\n            \u003cbutton class=\"tab-btn\" id=\"tabBtn-gym\" onclick=\"switchTwaTab(\u0027gym\u0027)\"\u003e🏋️ Gym \u0026 Build (GymIQ)\u003c/button\u003e\n            \u003cbutton class=\"tab-btn\" id=\"tabBtn-gear\" onclick=\"switchTwaTab(\u0027gear\u0027)\"\u003e🎒 Gear \u0026 Loadout\u003c/button\u003e\n            \u003cbutton class=\"tab-btn\" id=\"tabBtn-merits\" onclick=\"switchTwaTab(\u0027merits\u0027)\"\u003e🎖️ Merits \u0026 Discipline\u003c/button\u003e\n            \u003cbutton class=\"tab-btn\" id=\"tabBtn-economy\" onclick=\"switchTwaTab(\u0027economy\u0027)\"\u003e💰 Economy \u0026 Networth\u003c/button\u003e\n        \u003c/div\u003e\n\n        \u003c!-- ==================== TAB 1: WAR \u0026 TARGETS ==================== --\u003e\n        \u003cdiv id=\"tab-war\" class=\"tab-content active\"\u003e\n            \u003c!-- Active War Targets \u0026 Doable FF Roster Scanner --\u003e\n            \u003cdiv class=\"advice-box\" style=\"border-color: var(--accent-orange); background: #13131a;\"\u003e\n                \u003cdiv style=\"display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;\"\u003e\n                    \u003cdiv\u003e\n                        \u003ch3 style=\"margin:0; color:var(--accent-orange);\"\u003e⚔️ Active Ranked War Target Scanner (Best Fair Fight \u0026 Respect Farm)\u003c/h3\u003e\n                        \u003cdiv style=\"font-size:12px; color:#aaa; margin-top:4px;\"\u003e\n                            Scans the enemy faction roster in your active Ranked War, computes predicted stats via BSP, and sorts targets by \u003cstrong\u003eOptimal Fair Fight (FF) \u0026 Respect Yield\u003c/strong\u003e.\n                        \u003c/div\u003e\n                    \u003c/div\u003e\n                    \u003cbutton onclick=\"scanActiveWarRoster()\" class=\"btn-analyze\" style=\"background:var(--accent-orange); color:#000; font-weight:bold; padding:8px 18px; border-radius:6px; cursor:pointer;\"\u003e\n                        🔄 Scan War Targets\n                    \u003c/button\u003e\n                \u003c/div\u003e\n                \u003cdiv id=\"warScanStatus\" style=\"margin-top:12px; font-size:12px; color:#ccc;\"\u003e\n                    Click \u003cstrong\u003e\"Scan War Targets\"\u003c/strong\u003e to detect your active war and rank enemy faction members by farmability.\n                \u003c/div\u003e\n                \u003cdiv id=\"warRosterContainer\" style=\"margin-top:12px; overflow-x:auto;\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n\n            \u003c!-- Enemy Target Spy / Quick Compare --\u003e\n            \u003cdiv class=\"advice-box\" style=\"border-color: var(--accent-blue);\"\u003e\n                \u003cdiv style=\"display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;\"\u003e\n                    \u003ch3 style=\"margin:0;\"\u003e🎯 Enemy Target Scout (BSP Stat Predictor Engine)\u003c/h3\u003e\n                    \u003cdiv style=\"display:flex; gap:6px;\"\u003e\n                        \u003cspan id=\"bspBridgeBadge\" class=\"badge\" style=\"background:#222; color:#aaa; border:1px solid #444; font-size:10px;\"\u003eChecking BSP Bridge...\u003c/span\u003e\n                        \u003cspan class=\"badge\" style=\"background:var(--accent-orange); color:#000; font-size:10px;\"\u003eTDup Machine Model\u003c/span\u003e\n                    \u003c/div\u003e\n                \u003c/div\u003e\n                \u003cp style=\"font-size:12px; color:#aaa; margin:6px 0 12px 0;\"\u003e\n                    Enter an enemy Torn User ID to calculate or pull their \u003cstrong\u003ePredicted Total Battle Stats (TBS)\u003c/strong\u003e directly from your installed BSP userscript cache or mathematical energy model:\n                \u003c/p\u003e\n                \u003cdiv style=\"display:flex; gap:10px; margin-bottom:8px;\"\u003e\n                    \u003cinput type=\"text\" id=\"enemyIdInput\" class=\"api-input\" placeholder=\"Enemy Torn ID (e.g. 2899019)\" style=\"padding:10px 14px; flex:1;\"\u003e\n                    \u003cbutton onclick=\"scoutEnemy()\" class=\"btn-analyze\" style=\"background:var(--accent-blue); color:#fff; padding:10px 20px;\"\u003eScout \u0026 Predict Stats\u003c/button\u003e\n                \u003c/div\u003e\n                \u003cdiv id=\"bspBridgeStatus\" style=\"font-size:11px; color:#888; margin-bottom:8px;\"\u003e\u003c/div\u003e\n                \u003cdiv id=\"enemyScoutResult\" style=\"font-size:13px; color:#ddd;\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n        \u003c/div\u003e\n\n        \u003c!-- ==================== TAB 2: GYM \u0026 BUILD (GYMIQ) ==================== --\u003e\n        \u003cdiv id=\"tab-gym\" class=\"tab-content\"\u003e\n            \u003c!-- Target Goal Selector with GymIQ Standards --\u003e\n            \u003cdiv class=\"goal-selector-card\"\u003e\n                \u003cdiv style=\"display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;\"\u003e\n                    \u003cdiv style=\"font-weight: bold; font-size: 14px; color: var(--accent-orange);\"\u003e🎯 Select Your Combat \u0026 Gym Target Ratio:\u003c/div\u003e\n                    \u003cspan class=\"badge\" style=\"background:#ff9900; color:#000; font-size:10px;\"\u003e⚡ Powered by GymIQ Standards\u003c/span\u003e\n                \u003c/div\u003e\n                \u003cdiv style=\"font-size: 12px; color: var(--text-muted); margin-top: 4px;\"\u003e\n                    Calculates exact stat targets, deficits, gym unlocks, and live \u003cstrong\u003eGymIQ \"Train Next\"\u003c/strong\u003e recommendations:\n                \u003c/div\u003e\n                \u003cselect id=\"goalSelector\" onchange=\"updateGoalRoadmap()\"\u003e\n                    \u003coptgroup label=\"⚖️ Baldr\u0027s Specialist Ratios (100 Primary : 80 Secondary : 72 : 72)\"\u003e\n                        \u003coption value=\"baldr_dex\"\u003e💨 Baldr\u0027s Dex Whore (100 Dex : 80 Def : 72 Str : 72 Spd — The Elites + Balboa\u0027s)\u003c/option\u003e\n                        \u003coption value=\"baldr_def\"\u003e🛡️ Baldr\u0027s Defense Tank (100 Def : 80 Dex : 72 Str : 72 Spd — Isoyama + Balboa\u0027s)\u003c/option\u003e\n                        \u003coption value=\"baldr_str\"\u003e🏋️ Baldr\u0027s Strength Whore (100 Str : 80 Spd : 72 Def : 72 Dex — Gym 3000 + Frontline)\u003c/option\u003e\n                        \u003coption value=\"baldr_spd\"\u003e⚡ Baldr\u0027s Speed Whore (100 Spd : 80 Str : 72 Def : 72 Dex — Total Rebound + Frontline)\u003c/option\u003e\n                        \u003coption value=\"baldr_ratio\"\u003e⚖️ Baldr\u0027s Auto-Balanced (Auto-Pick Top 2 Stats as Primary \u0026 Secondary)\u003c/option\u003e\n                        \u003coption value=\"pure_balanced\"\u003e🛡️ Pure Balanced Titan (1 : 1 : 1 : 1 — Equal 25% All Stats)\u003c/option\u003e\n                    \u003c/optgroup\u003e\n                    \u003coptgroup label=\"🥊 GymIQ Heavy Specialist (100 : 70 : 70 : 70)\"\u003e\n                        \u003coption value=\"gymi_heavy_specialist\"\u003e🥊 GymIQ Heavy Specialist (100 Primary : 70 : 70 : 70 Balanced Others)\u003c/option\u003e\n                    \u003c/optgroup\u003e\n                    \u003coptgroup label=\"🔥 Hank\u0027s Extreme Specialist Ratios (100 : 80 : 80 : 28 Max Dump)\"\u003e\n                        \u003coption value=\"hank_dex\"\u003e💨 Hank\u0027s Dex Whore (100 Dex : 80 Spd : 80 Str : 28 Def Dump)\u003c/option\u003e\n                        \u003coption value=\"hank_def\"\u003e🛡️ Hank\u0027s Defense Tank (100 Def : 80 Str : 80 Spd : 28 Dex Dump)\u003c/option\u003e\n                        \u003coption value=\"hank_str\"\u003e🏋️ Hank\u0027s Strength Whore (100 Str : 80 Def : 80 Dex : 28 Spd Dump)\u003c/option\u003e\n                        \u003coption value=\"hank_spd\"\u003e⚡ Hank\u0027s Speed Demon (100 Spd : 80 Def : 80 Dex : 28 Str Dump)\u003c/option\u003e\n                    \u003c/optgroup\u003e\n                    \u003coptgroup label=\"🚀 GymIQ Late-Game Scaling\"\u003e\n                        \u003coption value=\"se_rush\"\u003e🚀 Stat Enhancer (SE) Rush: Fast-Track 1.5B in Highest Stat\u003c/option\u003e\n                    \u003c/optgroup\u003e\n                \u003c/select\u003e\n            \u003c/div\u003e\n\n            \u003c!-- Target Goal Strategy Roadmap --\u003e\n            \u003cdiv class=\"advice-box\" id=\"goalRoadmapBox\" style=\"border: 2px solid var(--accent-orange);\"\u003e\n                \u003ch3 id=\"goalTitle\"\u003e🎯 Calculated Gym Ratio \u0026 Roadmap\u003c/h3\u003e\n                \u003cdiv id=\"gymUnlockBanner\"\u003e\u003c/div\u003e\n                \u003cdiv id=\"goalAdvice\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n\n            \u003c!-- Training Progression Economy: Happy Jumps vs Energy Cans vs Stat Enhancers (SE) --\u003e\n            \u003cdiv class=\"advice-box\" style=\"border: 2px solid var(--accent-orange); background: #15151c;\"\u003e\n                \u003cdiv style=\"display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;\"\u003e\n                    \u003ch3 style=\"margin:0; color:var(--accent-orange);\"\u003e⚡ Training Progression Economy: Happy Jumps, Energy Cans \u0026 Stat Enhancers\u003c/h3\u003e\n                    \u003cspan class=\"badge\" style=\"background:#ff9900; color:#000;\"\u003eFull Lifetime ROI Engine\u003c/span\u003e\n                \u003c/div\u003e\n                \u003cp style=\"font-size:12px; color:var(--text-muted); margin:8px 0 14px 0;\"\u003e\n                    Tailored for every stage of your Torn journey: Early-game \u003cstrong\u003eHappy Jumps (\u0026lt;400k-800k threshold)\u003c/strong\u003e, Mid-game \u003cstrong\u003e3x Xanax + Energy Cans (to 1.5B)\u003c/strong\u003e, and Late-game \u003cstrong\u003eStat Enhancers (1.5B+)\u003c/strong\u003e with exact cost-per-stat ($/gain) comparisons.\n                \u003c/p\u003e\n                \u003cdiv id=\"boosterRoiContainer\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n        \u003c/div\u003e\n\n        \u003c!-- ==================== TAB 3: GEAR \u0026 LOADOUT ==================== --\u003e\n        \u003cdiv id=\"tab-gear\" class=\"tab-content\"\u003e\n            \u003c!-- Equipped Gear \u0026 Ammo Audit Card --\u003e\n            \u003cdiv class=\"advice-box\"\u003e\n                \u003ch3\u003e🎒 Equipped Arsenal \u0026 Special Ammo (Live from API v2)\u003c/h3\u003e\n                \u003cdiv id=\"ammoAlertContainer\"\u003e\u003c/div\u003e\n                \u003cdiv id=\"equippedGearGrid\" class=\"gear-grid\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n\n            \u003c!-- Weapons Advice --\u003e\n            \u003cdiv class=\"advice-box\"\u003e\n                \u003ch3\u003e🎯 Weapon Mastery \u0026 Loadout Audit\u003c/h3\u003e\n                \u003cdiv id=\"weaponAdvice\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n\n            \u003c!-- General War \u0026 Defensive Advice --\u003e\n            \u003cdiv class=\"advice-box\"\u003e\n                \u003ch3\u003e🛡️ Armor \u0026 Next-Step Gear Upgrades\u003c/h3\u003e\n                \u003cdiv id=\"defenseAdvice\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n        \u003c/div\u003e\n\n        \u003c!-- ==================== TAB 4: MERITS \u0026 DISCIPLINE ==================== --\u003e\n        \u003cdiv id=\"tab-merits\" class=\"tab-content\"\u003e\n            \u003c!-- Recent Attacks \u0026 Chaining Audit --\u003e\n            \u003cdiv class=\"advice-box\"\u003e\n                \u003ch3\u003e⚔️ Recent 100 Attacks \u0026 Chaining Analysis\u003c/h3\u003e\n                \u003cdiv id=\"recentAttacksAdvice\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n\n            \u003c!-- Veteran War Prep \u0026 Discipline --\u003e\n            \u003cdiv class=\"advice-box\"\u003e\n                \u003ch3\u003e🎖️ Veteran War Prep \u0026 Discipline (Revives, Xanax \u0026 Hit Types)\u003c/h3\u003e\n                \u003cdiv id=\"veteranPrepAdvice\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n\n            \u003c!-- Education \u0026 Gym Courses Checklist --\u003e\n            \u003cdiv class=\"advice-box\"\u003e\n                \u003ch3\u003e🎓 Mandatory Combat \u0026 Gym Education Checklist\u003c/h3\u003e\n                \u003cdiv id=\"educationAdvice\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n\n            \u003c!-- Merits \u0026 Perk Optimization --\u003e\n            \u003cdiv class=\"advice-box\"\u003e\n                \u003ch3\u003e✨ Merits \u0026 Combat Perks Audit\u003c/h3\u003e\n                \u003cdiv id=\"meritsAdvice\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n        \u003c/div\u003e\n\n        \u003c!-- ==================== TAB 5: ECONOMY \u0026 NETWORTH ==================== --\u003e\n        \u003cdiv id=\"tab-economy\" class=\"tab-content\"\u003e\n            \u003c!-- Networth, Stocks \u0026 Inventory Valuation --\u003e\n            \u003cdiv class=\"advice-box\"\u003e\n                \u003ch3\u003e🏦 Networth, Stocks \u0026 Inventory Valuation\u003c/h3\u003e\n                \u003cdiv id=\"networthBreakdown\"\u003e\u003c/div\u003e\n            \u003c/div\u003e\n        \u003c/div\u003e\n    \u003c/div\u003e\n\u003c/div\u003e";
 
     function initAdvisorLogic() {
         console.log('[TornWarAdvisor] Initializing advisor dashboard logic...');
@@ -129,6 +125,14 @@
                     method: 'GET',
                     url: url,
                     headers: { 'Accept': 'application/json' },
+                    timeout: 20000,
+                    ontimeout: function() {
+                        console.error('[TornWarAdvisor] GM_xmlhttpRequest timed out, trying direct fetch:', url);
+                        fetch(url)
+                            .then(r => r.json())
+                            .then(resolve)
+                            .catch(e => reject(new Error('Request timed out: ' + url)));
+                    },
                     onload: function(res) {
                         try {
                             const data = JSON.parse(res.responseText);
@@ -153,7 +157,6 @@
         };
 
         window.fetchWithFallback = twaFetch;
-        targetWindow.fetchWithFallback = twaFetch;
 
         // Direct GM_xmlhttpRequest helper for TDup lol-manager BSP API
         const twaBsp = function(apiKey, targetId) {
@@ -166,6 +169,11 @@
                     method: 'GET',
                     url: 'https://www.lol-manager.com/api/battlestats/' + encodeURIComponent(apiKey) + '/' + encodeURIComponent(targetId) + '/1.0',
                     headers: { 'Accept': 'application/json' },
+                    timeout: 20000,
+                    ontimeout: function() {
+                        console.error('[TornWarAdvisor] BSP request timed out for target:', targetId);
+                        resolve(null);
+                    },
                     onload: function(res) {
                         try {
                             const data = JSON.parse(res.responseText);
@@ -188,11 +196,9 @@
         const requestBspDirect = twaBsp;
         window.requestBspDirect = twaBsp;
         window.requestBspFromExtension = twaBsp;
-        targetWindow.requestBspDirect = twaBsp;
-        targetWindow.requestBspFromExtension = twaBsp;
 
-        // Auto-load saved Torn API key from GM_getValue / localStorage
-        const savedKey = (typeof GM_getValue !== 'undefined' ? GM_getValue('twa_torn_key', '') : '') || localStorage.getItem('twa_torn_key') || localStorage.getItem('torn_api_key') || '';
+        // Auto-load saved Torn API key from GM_getValue (never leak key to localStorage)
+        const savedKey = (typeof GM_getValue !== 'undefined' ? GM_getValue('twa_torn_key', '') : '') || '';
         const keyInput = document.getElementById('apiKeyInput');
         if (keyInput && savedKey) {
             keyInput.value = savedKey;
@@ -210,18 +216,27 @@
             bspStatus.innerHTML = '<span style=\"color:var(--accent-green);\">⚡ All-in-One Userscript connected directly to TDup BSP API (GM_xmlhttpRequest active).</span>';
         }
 
-        // Save key on change or input
+        // Save key on change or input via GM_setValue only
         if (keyInput) {
             const saveHandler = () => {
                 const val = keyInput.value.trim();
                 if (typeof GM_setValue !== 'undefined') GM_setValue('twa_torn_key', val);
-                localStorage.setItem('twa_torn_key', val);
-                localStorage.setItem('torn_api_key', val);
             };
             keyInput.addEventListener('change', saveHandler);
             keyInput.addEventListener('input', saveHandler);
         }
-// Tab switching function
+// Sanitize untrusted strings to prevent XSS
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    // Tab switching function
     function switchTwaTab(tabKey) {
         // Remove active class from all buttons and tabs
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -311,7 +326,16 @@
             } catch (e) {}
 
             globalAttacks = Object.assign({}, cachedArchive, data.attacks || {});
+            // Keep only the most recent 100 attacks so the archive never grows unbounded across sessions.
             try {
+                const archiveEntries = Object.entries(globalAttacks);
+                if (archiveEntries.length > 100) {
+                    archiveEntries.sort((a, b) =>
+                        (b[1].timestamp_ended || b[1].timestamp_started || 0) -
+                        (a[1].timestamp_ended || a[1].timestamp_started || 0));
+                    globalAttacks = {};
+                    archiveEntries.slice(0, 100).forEach(([k, v]) => { globalAttacks[k] = v; });
+                }
                 localStorage.setItem('twa_combat_history_archive', JSON.stringify(globalAttacks));
             } catch (e) {}
 
@@ -339,7 +363,7 @@
         const def = bs.defense || 0;
         const spd = bs.speed || 0;
         const dex = bs.dexterity || 0;
-        const total = str + def + spd + dex;
+        const total = str + def + spd + dex || 1; // guard against 0 -> NaN percentages
 
         document.getElementById('playerName').innerText = `${name} [Lvl ${lvl}]`;
         document.getElementById('totalStatsDisplay').innerText = formatShortNumber(total);
@@ -542,8 +566,8 @@
 
         // 6. Priority #6: Heavy Training Booster Pack (20e/25e Energy Cans)
         iconEl.innerText = '⚡';
-        titleEl.innerHTML = `Bulk Energy Cans (Munster / Mactear)`;
-        tagEl.innerText = `~$3M/ea • Faster 1.5B SE Rush`;
+        titleEl.innerHTML = `Bulk Energy Cans (Munster / Red Cow)`;
+        tagEl.innerText = `~$1.4M–$1.9M/ea • Faster 1.5B SE Rush`;
         tagEl.style.background = 'var(--accent-orange)';
         tagEl.style.color = '#000';
     }
@@ -611,15 +635,22 @@
     }
 
     function auditEducation(d) {
+        const completed = d.education_completed || [];
         const perks = (d.education_perks || []).join(' ').toLowerCase();
         const container = document.getElementById('educationAdvice');
         if (!container) return;
 
+        // Accurate course IDs in Torn (education_completed is an array of course IDs):
+        // 51:  Bachelor of Sports Science (+1% gym gains in all stats)
+        // 87:  Bachelor of Military Arts and Science (+100% weapon exp gain rate)
+        // 127: Intravenous Therapy (withdraw & deliver blood bags) — NOT 42 (Biology = steroids/pharmacy)
+        // 77:  Bachelor of Self Defense (passive stats / combat defense)
+        const hasCourse = (id) => Array.isArray(completed) && completed.includes(id);
         const checks = [
-            { name: 'Sports Science (Gym Gains)', pass: perks.includes('gym gains') },
-            { name: 'Combat Training (Weapon Exp & Damage)', pass: perks.includes('weapon experience') || perks.includes('melee damage') },
-            { name: 'Biology (Blood Bags & Med Cooldown)', pass: perks.includes('withdraw and deliver blood') || perks.includes('medical item effectiveness') },
-            { name: 'Self Defense / Martial Arts (Passive Stats)', pass: perks.includes('passive strength') || perks.includes('passive defense') || perks.includes('passive dexterity') }
+            { name: 'Sports Science (Bachelor — +1% Gym Gains)', pass: hasCourse(51) },
+            { name: 'Combat Training (Bachelor of Military Arts — 2x Weapon Exp)', pass: hasCourse(87) },
+            { name: 'Biology (Intravenous Therapy — Blood Bag Extraction)', pass: hasCourse(127) },
+            { name: 'Self Defense (Bachelor of Self Defense — Passive Combat)', pass: hasCourse(77) }
         ];
 
         container.innerHTML = checks.map(c => `
@@ -972,7 +1003,7 @@
             const enemyFactionId = factionIds.find(id => id != myFactionId) || factionIds[0];
             const enemyFactionName = factionsObj[enemyFactionId]?.name || `Enemy Faction [${enemyFactionId}]`;
 
-            statusEl.innerHTML = `⚔️ Identified War against <strong>${enemyFactionName}</strong> (ID: ${enemyFactionId}). Fetching enemy roster...`;
+            statusEl.innerHTML = `⚔️ Identified War against <strong>${escapeHtml(enemyFactionName)}</strong> (ID: ${enemyFactionId}). Fetching enemy roster...`;
 
             // 2. Fetch Enemy Faction Roster
             const enemyFactionUrl = `https://api.torn.com/faction/${enemyFactionId}?selections=basic&key=${key}`;
@@ -996,27 +1027,32 @@
             }));
 
             if (memberList.length === 0) {
-                statusEl.innerHTML = `<span style="color:var(--accent-red);">No members found in enemy faction ${enemyFactionName}.</span>`;
+                statusEl.innerHTML = `<span style="color:var(--accent-red);">No members found in enemy faction ${escapeHtml(enemyFactionName)}.</span>`;
                 return;
             }
 
             // Determine player's battle stats for Fair Fight calculations
-            let myTotal = 2474700000;
+            let myTotal = 0;
             if (globalPlayerData) {
                 const myBs = globalPlayerData.strength !== undefined ? globalPlayerData : (globalPlayerData.battlestats || {});
                 const calcTotal = (myBs.strength || 0) + (myBs.defense || 0) + (myBs.speed || 0) + (myBs.dexterity || 0);
                 if (calcTotal > 0) myTotal = calcTotal;
             }
 
+            if (!myTotal || myTotal === 0) {
+                statusEl.innerHTML = `<span style="color:var(--accent-red);">Please click <strong>"Analyze Combat Profile"</strong> first so your battle stats can be loaded for Fair Fight calculations.</span>`;
+                return;
+            }
+
             const allMembers = [...memberList].sort((a, b) => b.level - a.level);
-            statusEl.innerHTML = `Fetching live official BSP predictions directly from TDup's server for <strong>all ${allMembers.length} targets</strong> in <strong>${enemyFactionName}</strong>...`;
+            statusEl.innerHTML = `Fetching live official BSP predictions directly from TDup's server for <strong>all ${allMembers.length} targets</strong> in <strong>${escapeHtml(enemyFactionName)}</strong>...`;
 
             let analyzedTargets = [];
             const batchSize = 3;
 
             for (let i = 0; i < allMembers.length; i += batchSize) {
                 const batch = allMembers.slice(i, i + batchSize);
-                statusEl.innerHTML = `Querying TDup BSP Server: <strong>${Math.min(i + batchSize, allMembers.length)} / ${allMembers.length}</strong> targets in <strong>${enemyFactionName}</strong>...`;
+                statusEl.innerHTML = `Querying TDup BSP Server: <strong>${Math.min(i + batchSize, allMembers.length)} / ${allMembers.length}</strong> targets in <strong>${escapeHtml(enemyFactionName)}</strong>...`;
 
                 const batchPromises = batch.map(async (m) => {
                     try {
@@ -1051,16 +1087,16 @@
                                 tier = '⚠️ High Threat (Surpasses You)';
                                 badgeColor = 'background:var(--accent-red); color:#fff;';
                                 sortScore = 10;
-                            } else if (statRatio >= 0.70 && statRatio <= 1.25) {
-                                tier = '🔥 Optimal Respect Farm (2.6x–3.0x FF)';
+                            } else if (ff >= 2.6) {
+                                tier = '🔥 Max Respect Farm (2.6x–3.0x FF)';
                                 badgeColor = 'background:var(--accent-orange); color:#000; font-weight:bold;';
                                 sortScore = 100;
-                            } else if (statRatio >= 0.25 && statRatio < 0.70) {
+                            } else if (ff >= 2.0) {
                                 tier = '⚡ Safe Farm (2.0x–2.5x FF)';
                                 badgeColor = 'background:var(--accent-green); color:#000;';
                                 sortScore = 80;
                             } else {
-                                tier = 'Easy Chain Target (1.2x–1.9x FF)';
+                                tier = 'Easy Chain Target (1.0x–1.9x FF)';
                                 badgeColor = 'background:#444; color:#ccc;';
                                 sortScore = 50;
                             }
@@ -1098,7 +1134,7 @@
 
             statusEl.innerHTML = `
                 <div style="color:var(--accent-green); margin-bottom:8px;">
-                    ✅ <strong>Live Official BSP Scan:</strong> Showing <strong>${bestTargets.length} Optimal Fair Fight (FF) Respect Targets</strong> in <strong>${enemyFactionName}</strong> directly from TDup's official server:
+                    ✅ <strong>Live Official BSP Scan:</strong> Showing <strong>${bestTargets.length} Optimal Fair Fight (FF) Respect Targets</strong> in <strong>${escapeHtml(enemyFactionName)}</strong> directly from TDup's official server:
                 </div>
             `;
 
@@ -1110,7 +1146,7 @@
                 return `
                     <tr style="border-bottom: 1px solid #282834; font-size:12px;">
                         <td style="padding:10px 8px;">
-                            <strong>${t.name}</strong> <span style="font-size:11px; color:#888;">[${t.id}]</span>
+                            <strong>${escapeHtml(t.name)}</strong> <span style="font-size:11px; color:#888;">[${t.id}]</span>
                         </td>
                         <td style="padding:10px 8px; text-align:center;">Lvl ${t.level}</td>
                         <td style="padding:10px 8px; text-align:center;">${statusDot}</td>
@@ -1128,7 +1164,7 @@
                             <span class="badge" style="${t.badgeColor}; font-size:10px; padding:3px 8px;">${t.tier}</span>
                         </td>
                         <td style="padding:10px 8px; text-align:center;">
-                            <button onclick="document.getElementById('enemyIdInput').value='${t.id}'; scoutEnemy(); window.location.hash='#enemyScoutResult';" style="background:#222; border:1px solid #555; color:#fff; padding:4px 10px; border-radius:4px; font-size:11px; cursor:pointer;">
+                            <button class="twa-strategy-btn" data-enemy-id="${t.id}" style="background:#222; border:1px solid #555; color:#fff; padding:4px 10px; border-radius:4px; font-size:11px; cursor:pointer;">
                                 Strategy
                             </button>
                         </td>
@@ -1245,7 +1281,7 @@
                 out.innerHTML = `
                     <div style="background:#15151a; padding:14px; border-radius:6px; border:1px solid #333; margin-top:10px;">
                         <div style="font-size:16px; font-weight:bold; color:#fff; display:flex; justify-content:space-between; align-items:center;">
-                            <span>${data.name} [${data.player_id}] — Lvl ${data.level}</span>
+                            <span>${escapeHtml(data.name)} [${data.player_id}] — Lvl ${data.level}</span>
                             <span style="font-size:12px; color:#aaa;">Rank: ${data.rank || 'Unknown'}</span>
                         </div>
                         <div style="margin-top:6px; font-size:12px; color:#ccc;">
@@ -1255,12 +1291,11 @@
                         </div>
                         <div style="margin-top:12px; padding:12px; border-radius:6px; background:rgba(255, 75, 75, 0.1); border:1px solid var(--accent-red); color:var(--accent-red); font-size:13px;">
                             <strong>⚠️ No BSP Battle Stats Available:</strong><br>
-                            Local math calculation has been completely removed per configuration.<br>
-                            Unable to fetch official stats from TDup's BSP server. Please ensure:
+                            Unable to retrieve official battle stats from TDup's BSP server (lol-manager.com).<br>
+                            Please ensure:
                             <ul style="margin:6px 0 0 16px; padding:0;">
-                                <li>Tampermonkey extension is installed and running with <code>bsp_bridge.user.js</code>.</li>
-                                <li>In Chrome <code>chrome://extensions/</code>, "Allow access to file URLs" is toggled ON for Tampermonkey.</li>
-                                <li>Your BSP subscription is active on lol-manager.com.</li>
+                                <li>Your Torn API key has access and your BSP subscription is active on lol-manager.com.</li>
+                                <li>The target ID is valid and has sufficient public log data for stat prediction.</li>
                             </ul>
                         </div>
                     </div>
@@ -1324,7 +1359,7 @@
                 }
 
                 if (pstats.piercingammoused > 1000 || pstats.incendiaryammoused > 1000) {
-                    strategyItems.push(`<strong>Special Ammo User:</strong> Enemy has fired ${formatNumber(pstats.specialammoused)} special rounds. Wear full 5/5 Armor and throw a <strong>Smoke Grenade (+25% Defense)</strong>.`);
+                    strategyItems.push(`<strong>Special Ammo User:</strong> Enemy has fired ${formatNumber(pstats.specialammoused)} special rounds. Wear full 5/5 Armor and throw a <strong>Smoke Grenade (-67% Enemy Speed)</strong>.`);
                 }
 
                 strategyItems.push(`<strong>Target Max Life:</strong> ~${formatNumber(enemyHp)} HP.`);
@@ -1382,17 +1417,10 @@
                                 targetFights.push(atk);
                             }
                         }
-                        // Also persist into globalAttacks
-                        if (atk.code) globalAttacks[atk.code] = atk;
                     });
 
                     toTimestamp = oldestInPage - 1;
                 }
-
-                // Update persistent localStorage cache with any newly discovered historical fights
-                try {
-                    localStorage.setItem('twa_combat_history_archive', JSON.stringify(globalAttacks));
-                } catch (e) {}
             } catch (deepSearchErr) {
                 console.warn('[TornWarAdvisor] Deep attack search error:', deepSearchErr);
             }
@@ -1425,9 +1453,9 @@
                 // Derived battle log intelligence
                 let historyVerdict = '';
                 if (winsAgainstThem > 0 && lossesAgainstThem === 0) {
-                    historyVerdict = `🟢 <strong>Proven Matchup Record:</strong> You have beaten ${data.name} in <strong>${winsAgainstThem}/${winsAgainstThem}</strong> past attacks! Highly safe repeat target.`;
+                    historyVerdict = `🟢 <strong>Proven Matchup Record:</strong> You have beaten ${escapeHtml(data.name)} in <strong>${winsAgainstThem}/${winsAgainstThem}</strong> past attacks! Highly safe repeat target.`;
                 } else if (lossesAgainstThem > 0 && winsAgainstThem === 0) {
-                    historyVerdict = `🔴 <strong>Confirmed Loss in Logs:</strong> You lost ${lossesAgainstThem} time(s) to ${data.name}. Do NOT attack without debuffs (Tear Gas/Flash) or group assist!`;
+                    historyVerdict = `🔴 <strong>Confirmed Loss in Logs:</strong> You lost ${lossesAgainstThem} time(s) to ${escapeHtml(data.name)}. Do NOT attack without debuffs (Tear Gas/Flash) or group assist!`;
                 } else if (winsAgainstThem > 0 && lossesAgainstThem > 0) {
                     historyVerdict = `🟡 <strong>Contested Matchup:</strong> ${winsAgainstThem} win(s), ${lossesAgainstThem} loss(es). Tactical temp items & turn 1 weapon selection are mandatory.`;
                 } else if (defendedAgainstThem > 0 && defendsLostToThem === 0) {
@@ -1438,11 +1466,13 @@
                     historyVerdict = `⚔️ <strong>${targetFights.length} Historical Fights Found:</strong> Stalemate / inconclusive past encounters. Use proper weapon and temporary item openers.`;
                 }
 
-                // Fair Fight derived from actual combat
-                if (latestFf >= 2.5) {
-                    logStrategyBonus.push(`🔥 <strong>Actual Combat Fair Fight (${latestFf}x):</strong> Historical logs confirm this target yields huge respect (${latestFf}x)! High priority war target.`);
-                } else if (latestFf <= 1.3) {
-                    logStrategyBonus.push(`ℹ️ <strong>Low Combat Fair Fight (${latestFf}x):</strong> Past combat logs show low respect yield. Statistically, you heavily overpower this target.`);
+                // Fair Fight derived from actual combat (only if modifiers.fair_fight was present)
+                if (latestFight.modifiers && latestFight.modifiers.fair_fight !== undefined) {
+                    if (latestFf >= 2.5) {
+                        logStrategyBonus.push(`🔥 <strong>Actual Combat Fair Fight (${latestFf}x):</strong> Historical logs confirm this target yields huge respect (${latestFf}x)! High priority war target.`);
+                    } else if (latestFf <= 1.3) {
+                        logStrategyBonus.push(`ℹ️ <strong>Low Combat Fair Fight (${latestFf}x):</strong> Past combat logs show low respect yield. Statistically, you heavily overpower this target.`);
+                    }
                 }
 
                 // Build detailed list of past fights (up to 10 most recent)
@@ -1497,7 +1527,7 @@
             } else {
                 logHistoryHtml = `
                     <div style="margin-top:12px; background:#141419; border:1px solid #282834; border-radius:6px; padding:10px; font-size:11px; color:#888;">
-                        ℹ️ No direct fights against <strong>${data.name}</strong> found in your attack archives. Tactical suggestions are calculated using their live profile and official BSP predictor.
+                        ℹ️ No direct fights against <strong>${escapeHtml(data.name)}</strong> found in your attack archives. Tactical suggestions are calculated using their live profile and official BSP predictor.
                     </div>
                 `;
             }
@@ -1510,7 +1540,7 @@
             out.innerHTML = `
                 <div style="background:#15151a; padding:14px; border-radius:6px; border:1px solid #333; margin-top:10px;">
                     <div style="font-size:16px; font-weight:bold; color:#fff; display:flex; justify-content:space-between; align-items:center;">
-                        <span>${data.name} [${data.player_id}] — Lvl ${data.level}</span>
+                        <span>${escapeHtml(data.name)} [${data.player_id}] — Lvl ${data.level}</span>
                         <span style="font-size:12px; color:#aaa;">Rank: ${data.rank || 'Unknown'}</span>
                     </div>
                     <div style="margin-top:6px; font-size:12px; color:#ccc;">
@@ -1528,7 +1558,7 @@
                     ${logHistoryHtml}
 
                     <div style="margin-top:12px; border-top:1px solid #2a2a35; padding-top:10px;">
-                        <div style="font-weight:bold; color:var(--accent-orange); font-size:13px; margin-bottom:8px;">⚔️ Tactical Combat Strategy to Defeat ${data.name}:</div>
+                        <div style="font-weight:bold; color:var(--accent-orange); font-size:13px; margin-bottom:8px;">⚔️ Tactical Combat Strategy to Defeat ${escapeHtml(data.name)}:</div>
                         ${strategyItems.map(item => `<div class="advice-item" style="margin-bottom:8px;">${item}</div>`).join('')}
                     </div>
                 </div>
@@ -1665,30 +1695,30 @@
 
         if (goal.includes('dex')) {
             compFocusLabel = 'Dexterity Evasion Focus';
-            compSTier = `<strong>10* Gents Strip Club:</strong> +25% passive Dexterity, +10% Dex gym gains, 50e daily energy special. (The absolute undisputed king for Dex rogues).`;
-            compATier = `<strong>10* Fitness Center:</strong> +3% all gym gains, +20e train special • <strong>10* Sweet Shop / Candle Shop:</strong> Steady energy/cans for daily volume.`;
-            compBTier = `<strong>10* Mining Company:</strong> +30% passive Defense (helps patch up Dex rogue defense baseline).`;
+            compSTier = `<strong>10* Gents Strip Club:</strong> Dancer's Flair +25% passive Dexterity, Pilates +10% Dex gym gains, No Touching 25% melee dodge • <strong>10* Ladies Strip Club:</strong> Hench +25% passive Defense, Boxercise +10% Def gym gains.`;
+            compATier = `<strong>10* Fitness Center:</strong> Training Regime +3% gym gains, Healthy Mind -30 min education time • <strong>10* Music Store:</strong> The Score +15% passive battle stats, Well Tuned +30% gym experience.`;
+            compBTier = `<strong>10* Sweet Shop / Candle Shop:</strong> Daily energy/cans and nerve for training volume.`;
         } else if (goal.includes('def')) {
             compFocusLabel = 'Defense Tank Focus';
-            compSTier = `<strong>10* Mining Company:</strong> +30% passive Defense, +10% Def gym gains, 50e daily energy special. (The undisputed meta company for Defense tanks).`;
-            compATier = `<strong>10* Fitness Center:</strong> +3% all gym gains, +20e train special • <strong>10* Oil Rig:</strong> +30% Strength (synergizes with secondary tank brawling).`;
+            compSTier = `<strong>10* Ladies Strip Club:</strong> Hench +25% passive Defense, Boxercise +10% Def gym gains, Hardbody 30% incoming melee damage reduction. (The undisputed meta company for Defense tanks).`;
+            compATier = `<strong>10* Fitness Center:</strong> Training Regime +3% gym gains, Healthy Mind -30 min education time • <strong>10* Mining Corporation:</strong> Essential Salts +10% max life, Preserved Meat 25e life-boost to 150%.`;
             compBTier = `<strong>10* Sweet Shop / Candle Shop:</strong> High energy conversion for rapid training volume.`;
         } else if (goal.includes('str')) {
             compFocusLabel = 'Strength Brawler Focus';
-            compSTier = `<strong>10* Oil Rig:</strong> +30% passive Strength, +10% Str gym gains, 50e daily energy special. (Peak damage multiplier for Strength one-punch builds).`;
-            compATier = `<strong>10* Fitness Center:</strong> +3% all gym gains, +20e train special • <strong>10* Mining Company:</strong> +30% Defense to survive counter-strikes.`;
+            compSTier = `<strong>10* Furniture Store:</strong> Beefcake +25% passive Strength, Brute Force 100% fist & kick damage. (Peak damage multiplier for Strength one-punch builds).`;
+            compATier = `<strong>10* Fitness Center:</strong> Training Regime +3% gym gains, Healthy Mind -30 min education time • <strong>10* Private Security Firm:</strong> Regulation +25% full-set armor mitigation to survive counter-strikes.`;
             compBTier = `<strong>10* Sweet Shop / Candle Shop:</strong> Continuous energy flow for daily heavy gym sets.`;
         } else if (goal.includes('spd')) {
             compFocusLabel = 'Speed Assassin Focus';
-            compSTier = `<strong>10* Amusement Park:</strong> +10 Free Energy & +2 Nerve per day, +25% Speed gym gains, or <strong>10* Fitness Center:</strong> +3% all gym gains and +20e train special.`;
-            compATier = `<strong>10* Gents Strip Club / Ladies Strip Club:</strong> High daily energy specials (50e) to accelerate Speed training in Total Rebound.`;
+            compSTier = `<strong>10* Gas Station:</strong> Fueled +25% passive Speed, Fireproof 50% fire damage mitigation • <strong>10* Fitness Center:</strong> Training Regime +3% gym gains, Healthy Mind -30 min education time.`;
+            compATier = `<strong>10* Gents Strip Club / Ladies Strip Club:</strong> Daily energy/happiness specials to accelerate Speed training in Total Rebound.`;
             compBTier = `<strong>10* Candle Shop / Sweet Shop:</strong> Steady energy/can supply for rapid gym unlocks.`;
         } else {
             // Pure balanced or auto-balanced
             compFocusLabel = 'Balanced Titan Focus (All-Around Multipliers)';
-            compSTier = `<strong>10* Fitness Center:</strong> +3% all gym gains, +20e train special (perfect for 1:1:1:1 training across all 4 stats), or <strong>10* Sweet Shop / Candle Shop</strong> for maximum daily energy volume.`;
-            compATier = `<strong>10* Mining Company (+30% Def)</strong> or <strong>10* Gents Strip Club (+25% Dex):</strong> Massive passive stat multipliers to boost overall tankiness in wars.`;
-            compBTier = `<strong>10* Oil Rig:</strong> +30% passive Strength for extra punch.`;
+            compSTier = `<strong>10* Fitness Center:</strong> Training Regime +3% gym gains, Healthy Mind -30 min education time (perfect for 1:1:1:1 training across all 4 stats), or <strong>10* Sweet Shop / Candle Shop</strong> for maximum daily energy volume.`;
+            compATier = `<strong>10* Music Store (The Score +15% passive battle stats)</strong> or <strong>10* Gents Strip Club (Dancer's Flair +25% passive Dex):</strong> Massive passive stat multipliers to boost overall combat power in wars.`;
+            compBTier = `<strong>10* Furniture Store:</strong> Beefcake +25% passive Strength for extra punch.`;
         }
 
         html += `
@@ -1733,24 +1763,49 @@
         }
 
         let ammoWarnings = [];
+        let firearmCount = 0;
+        let specialAmmoCount = 0;
+
         equipment.forEach(item => {
-            if (item.type === 'Weapon' && item.sub_type !== 'Temporary' && item.ammo) {
-                if (item.ammo.type === 'Standard') {
-                    ammoWarnings.push(`Your <strong>${item.name}</strong> is loaded with <strong>Standard Ammo</strong>! Switch to <strong>Hollow Point</strong> (damage), <strong>Piercing</strong> (armor penetration), or <strong>Tracer</strong> (accuracy) for Ranked Wars.`);
+            // Only firearms carry special ammunition — melee weapons (Slashing/Piercing/Clubbing) never do.
+            const FIREARM_SUBTYPES = ['rifle', 'smg', 'shotgun', 'pistol', 'machine gun', 'heavy artillery'];
+            const itemSub = (item.sub_type || '').toLowerCase();
+            if (item.type === 'Weapon' && FIREARM_SUBTYPES.includes(itemSub)) {
+                firearmCount++;
+                if (item.ammo) {
+                    if (item.ammo.type === 'Standard') {
+                        ammoWarnings.push(`Your <strong>${escapeHtml(item.name)}</strong> is loaded with <strong>Standard Ammo</strong>! Switch to <strong>Hollow Point</strong> (damage), <strong>Piercing</strong> (armor penetration), or <strong>Tracer</strong> (accuracy) for Ranked Wars.`);
+                    } else if (item.ammo.type && item.ammo.type !== 'None') {
+                        specialAmmoCount++;
+                    }
+                } else {
+                    ammoWarnings.push(`Your <strong>${escapeHtml(item.name)}</strong> has no special ammo loaded! Equip special rounds from your inventory.`);
                 }
             }
         });
 
-        if (ammoWarnings.length > 0) {
+        if (firearmCount === 0) {
+            ammoAlert.innerHTML = `
+                <div class="alert-banner alert-info">
+                    ℹ️ <div><strong>No Firearms Equipped:</strong> No Primary or Secondary firearms equipped to check for special ammunition.</div>
+                </div>
+            `;
+        } else if (ammoWarnings.length > 0) {
             ammoAlert.innerHTML = `
                 <div class="alert-banner alert-warning">
                     ⚠️ <div>${ammoWarnings.join('<br>')}</div>
                 </div>
             `;
-        } else {
+        } else if (specialAmmoCount > 0) {
             ammoAlert.innerHTML = `
                 <div class="alert-banner alert-info" style="color:var(--accent-green); border-color:var(--accent-green); background:rgba(76,175,80,0.1);">
-                    ✅ <div><strong>Special Ammo Loaded:</strong> Your equipped weapons have special combat ammunition equipped.</div>
+                    ✅ <div><strong>Special Ammo Loaded:</strong> Your equipped firearms are loaded with special combat ammunition.</div>
+                </div>
+            `;
+        } else {
+            ammoAlert.innerHTML = `
+                <div class="alert-banner alert-warning">
+                    ⚠️ <div><strong>No Special Ammo Loaded:</strong> Equip special rounds (Piercing, Hollow Point, or Tracer) for Ranked Wars.</div>
                 </div>
             `;
         }
@@ -1769,7 +1824,7 @@
 
             return `
                 <div class="gear-item ${rarityClass}">
-                    <div class="gear-name">${item.name} <span style="font-size:10px; color:#888; font-weight:normal;">(${item.sub_type || item.type})</span></div>
+                    <div class="gear-name">${escapeHtml(item.name)} <span style="font-size:10px; color:#888; font-weight:normal;">(${item.sub_type || item.type})</span></div>
                     <div class="gear-meta">${statsText}</div>
                     ${ammo || mods ? `<div class="gear-meta">${[ammo, mods].filter(Boolean).join(' • ')}</div>` : ''}
                     ${bonuses ? `<div class="gear-bonus">★ ${bonuses}</div>` : ''}
@@ -1850,8 +1905,11 @@
             } else if (isDefender) {
                 defensiveFfSum += ff;
                 defensiveFfCount++;
-                if (atk.result === 'Lost') incomingDefendsWon++; // Defender won
-                else {
+                // Result is from the attacker's perspective. The defender wins only when the attacker 'Lost'.
+                // Draws/interrupts (Escape, Stalemate, Timeout, Assist, Interrupted) are NOT defender losses.
+                if (atk.result === 'Lost') {
+                    incomingDefendsWon++;
+                } else if (['Attacked', 'Mugged', 'Hospitalized', 'Arrested', 'Looted', 'Special'].includes(atk.result)) {
                     incomingDefendsLost++;
                     attackerCounts[atk.attacker_name] = (attackerCounts[atk.attacker_name] || 0) + 1;
                 }
@@ -1870,7 +1928,7 @@
         let farmAlerts = [];
         Object.entries(attackerCounts).forEach(([enemy, count]) => {
             if (count >= 3) {
-                farmAlerts.push(`<strong>${enemy}</strong> attacked and defeated you <strong>${count} times</strong> in recent logs!`);
+                farmAlerts.push(`<strong>${escapeHtml(enemy)}</strong> attacked and defeated you <strong>${count} times</strong> in recent logs!`);
             }
         });
 
@@ -1929,7 +1987,6 @@
 
     // 3. Merits & Combat Perks Audit (Full Veteran S-Tier & Weapon Matcher)
     function auditMeritsAndPerks(d, equipment, selectedGoal) {
-        const meritPerks = (d.merit_perks || []).map(p => p.toLowerCase());
         const container = document.getElementById('meritsAdvice');
         if (!container) return;
 
@@ -1947,74 +2004,42 @@
         // Rank 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, 10: 10 => Total 55 merits for 10/10
         const meritsForRank = (r) => (r * (r + 1)) / 2;
 
-        // 1. Audit Core S-Tier Trees
-        let lifeRank = 0;
-        let critRank = 0;
-        let bankRank = 0;
-        let eduRank = 0;
+        const merits = d.merits || {};
+        const getMerit = (name) => Number(merits[name] || 0);
 
-        // 2. Audit Passive Stats
-        let passiveStr = 0;
-        let passiveDef = 0;
-        let passiveSpd = 0;
-        let passiveDex = 0;
+        // 1. Audit Core S-Tier Trees directly from d.merits dictionary
+        const lifeRank = getMerit('Life Points');
+        const critRank = getMerit('Critical Hit Rate');
+        const bankRank = getMerit('Bank Interest');
+        const eduRank = getMerit('Education Length');
 
-        // 3. Audit Weapon Masteries
-        let rifleMastery = 0;
-        let smgMastery = 0;
-        let shotgunMastery = 0;
-        let pistolMastery = 0;
-        let heavyMastery = 0;
-        let machineGunMastery = 0;
-        let clubbedMastery = 0;
-        let slashingMastery = 0;
-        let piercingMastery = 0;
-        let mechanicalMastery = 0;
-        let tempMastery = 0;
+        // 2. Audit Passive Stats directly from d.merits
+        // Brawn = Strength, Protection = Defense, Sharpness = Speed, Evasion = Dexterity
+        const passiveStr = getMerit('Brawn');
+        const passiveDef = getMerit('Protection');
+        const passiveSpd = getMerit('Sharpness');
+        const passiveDex = getMerit('Evasion');
 
-        // 4. Audit Wasteful / Non-Combat Trees
-        let awarenessRank = 0;
-        let mugRank = 0;
-        let crimeRank = 0;
-        let brawnRank = 0;
-        let stealthRank = 0;
+        // 3. Audit Weapon Masteries directly from d.merits
+        const rifleMastery = getMerit('Rifle Mastery');
+        const smgMastery = getMerit('SMG Mastery');
+        const shotgunMastery = getMerit('Shotgun Mastery');
+        const pistolMastery = getMerit('Pistol Mastery');
+        const heavyMastery = getMerit('Heavy Artillery Mastery');
+        const machineGunMastery = getMerit('Machine Gun Mastery');
+        const clubbedMastery = getMerit('Club Mastery') || getMerit('Clubbed Mastery');
+        const slashingMastery = getMerit('Slashing Mastery');
+        const piercingMastery = getMerit('Piercing Mastery');
+        const mechanicalMastery = getMerit('Mechanical Mastery');
+        const tempMastery = getMerit('Temporary Mastery') || getMerit('Temporary Weapon Mastery');
 
-        (d.merit_perks || []).forEach(rawPerk => {
-            const p = rawPerk.toLowerCase();
-            const valMatch = p.match(/(\d+)/);
-            const val = valMatch ? parseInt(valMatch[0], 10) : 0;
-
-            if (p.includes('life')) lifeRank = Math.min(10, Math.round(val / 5)); // +5% per rank up to 50%
-            if (p.includes('critical hit')) critRank = Math.min(10, Math.round(val / 1)); // +1% per rank up to 10%
-            if (p.includes('bank interest')) bankRank = Math.min(10, Math.round(val / 5)); // +5% per rank
-            if (p.includes('education length') || p.includes('education time')) eduRank = Math.min(10, Math.round(val / 2));
-
-            // Stat Passives (+3% per rank)
-            if (p.includes('passive strength') || (p.includes('strength') && p.includes('passive'))) passiveStr = Math.min(10, Math.round(val / 3));
-            if (p.includes('passive defense') || (p.includes('defense') && p.includes('passive'))) passiveDef = Math.min(10, Math.round(val / 3));
-            if (p.includes('passive speed') || (p.includes('speed') && p.includes('passive'))) passiveSpd = Math.min(10, Math.round(val / 3));
-            if (p.includes('passive dexterity') || (p.includes('dexterity') && p.includes('passive'))) passiveDex = Math.min(10, Math.round(val / 3));
-
-            // Weapon Masteries
-            if (p.includes('rifle mastery')) rifleMastery = Math.min(10, val);
-            if (p.includes('smg mastery')) smgMastery = Math.min(10, val);
-            if (p.includes('shotgun mastery')) shotgunMastery = Math.min(10, val);
-            if (p.includes('pistol mastery')) pistolMastery = Math.min(10, val);
-            if (p.includes('heavy artillery')) heavyMastery = Math.min(10, val);
-            if (p.includes('machine gun')) machineGunMastery = Math.min(10, val);
-            if (p.includes('clubbed mastery')) clubbedMastery = Math.min(10, val);
-            if (p.includes('slashing mastery')) slashingMastery = Math.min(10, val);
-            if (p.includes('piercing mastery')) piercingMastery = Math.min(10, val);
-            if (p.includes('mechanical mastery')) mechanicalMastery = Math.min(10, val);
-            if (p.includes('temporary weapon')) tempMastery = Math.min(10, val);
-
-            // Wasteful / Situational
-            if (p.includes('awareness')) awarenessRank = Math.min(10, Math.round(val / 10)); // +10% per rank
-            if (p.includes('mug amount') || p.includes('mugging')) mugRank = Math.min(10, Math.round(val / 5));
-            if (p.includes('crime exp')) crimeRank = Math.min(10, Math.round(val / 2));
-            if (p.includes('brawn')) brawnRank = Math.min(10, Math.round(val / 3));
-            if (p.includes('stealth')) stealthRank = Math.min(10, Math.round(val / 2));
-        });
+        // 4. Audit Wasteful / Non-Combat Trees (Brawn is NOT wasteful! It is combat Strength)
+        const awarenessRank = getMerit('Awareness');
+        const mugRank = getMerit('Masterful Looting');
+        const crimeRank = getMerit('Crime XP');
+        const stealthRank = getMerit('Stealth');
+        // 'Master Thief' was removed from Torn's merits API — always 0.
+        const masterThiefRank = 0;
 
         // Calculate refundable merits from wasteful trees
         let wastedMeritsTotal = 0;
@@ -2028,6 +2053,11 @@
             const m = meritsForRank(mugRank);
             wastedMeritsTotal += m;
             wastedItemsList.push(`Mug Amount (${mugRank}/10 = ${m} merits)`);
+        }
+        if (masterThiefRank > 0) {
+            const m = meritsForRank(masterThiefRank);
+            wastedMeritsTotal += m;
+            wastedItemsList.push(`Master Thief (${masterThiefRank}/10 = ${m} merits)`);
         }
         if (stealthRank > 0) {
             const m = meritsForRank(stealthRank);
@@ -2080,11 +2110,11 @@
 
                 if (masteryName) {
                     if (activeRank >= 10) {
-                        weaponMatches.push(`<strong>${wName} (${masteryName}):</strong> Fully backed by <strong>10/10 (+10% DMG, +10% ACC)</strong>!`);
+                        weaponMatches.push(`<strong>${escapeHtml(wName)} (${masteryName}):</strong> Fully backed by <strong>10/10 (+10% DMG, +2.0 ACC)</strong>!`);
                     } else if (activeRank > 0) {
-                        weaponWarnings.push(`<strong>${wName} (${masteryName}):</strong> Currently only at <strong>${activeRank}/10</strong> (+${activeRank}% DMG/ACC). Push to 10/10 for max Ranked War lethality.`);
+                        weaponWarnings.push(`<strong>${escapeHtml(wName)} (${masteryName}):</strong> Currently only at <strong>${activeRank}/10</strong> (+${activeRank}% DMG, +${(activeRank * 0.2).toFixed(1)} ACC). Push to 10/10 for max Ranked War lethality.`);
                     } else {
-                        weaponWarnings.push(`⚠️ <strong>${wName} (${masteryName}):</strong> <strong>0/10 invested!</strong> You are wielding this weapon without any mastery damage/accuracy bonus!`);
+                        weaponWarnings.push(`⚠️ <strong>${escapeHtml(wName)} (${masteryName}):</strong> <strong>0/10 invested!</strong> You are wielding this weapon without any mastery damage/accuracy bonus!`);
                     }
                 }
             });
@@ -2123,10 +2153,10 @@
 
         let critAdviceHtml = `
             <div class="advice-item ${critRank >= 10 ? 'success' : 'warning'}">
-                <strong>💥 Critical Hit Rate (${critRank}/10):</strong> ${critRank > 0 ? `+${critRank}% Critical Hit Rate` : '0/10 invested'}. 
+                <strong>💥 Critical Hit Rate (${critRank}/10):</strong> ${critRank > 0 ? `+${(critRank * 0.5).toFixed(1)}% Critical Hit Rate` : '0/10 invested'}. 
                 ${critRank < 10 
-                    ? `Critical hits ignore a percentage of enemy armor mitigation. Essential for Ranked Wars against high-defense targets.` 
-                    : 'Maxed at +10% Crit! Provides steady armor-piercing damage.'}
+                    ? `Critical hits ignore a percentage of enemy armor mitigation (+0.5% per rank, up to +5.0% at 10/10). Essential for Ranked Wars against high-defense targets.` 
+                    : 'Maxed at +5.0% Crit! Provides steady armor-piercing damage.'}
             </div>
         `;
 
@@ -2201,7 +2231,7 @@
                     </div>
                     <div>
                         <span class="badge" style="background:#555; color:#fff; font-size:10px;">F-TIER (Reset Targets)</span> 
-                        <span style="color:#aaa;">Awareness, Mugging Amount, Master Thief, Stealth, Brawn (Pull these for combat resets!)</span>
+                        <span style="color:#aaa;">Awareness, Mugging Amount, Stealth (Pull these for combat resets!)</span>
                     </div>
                 </div>
             </div>
@@ -2264,7 +2294,7 @@
             tempMetaAdvice = `
                 <div style="margin-bottom:6px;">
                     <span class="badge" style="background:var(--accent-blue); color:#fff; font-size:10px;">MANDATORY TANK TEMP</span> 
-                    <strong>Smoke Grenade (+25% to +35% Defense):</strong> Stacks on top of your massive Defense pool, rendering enemy attacks completely useless.
+                    <strong>Smoke Grenade (-67% Enemy Speed) / Serotonin (+300% Defense, +25% Life):</strong> Crushes enemy Speed so they cannot land critical hits on you, or massive defense boost.
                 </div>
             `;
             ammoMetaAdvice = `
@@ -2300,7 +2330,7 @@
             tempMetaAdvice = `
                 <div style="margin-bottom:6px;">
                     <span class="badge" style="background:var(--accent-orange); color:#000; font-size:10px;">MANDATORY ACCURACY TEMP</span> 
-                    <strong>Flash Grenade (-Speed) or Tear Gas (-80% Enemy Speed):</strong> Since you dump Speed, throwing Tear Gas / Flash on Turn 1 allows your heavy hits to connect 100%!
+                    <strong>Flash Grenade (-80% Enemy Speed) or Smoke Grenade (-67% Enemy Speed):</strong> Since you dump Speed, throwing Flash or Smoke on Turn 1 reduces their Speed to 1/5th or 1/3rd, allowing your heavy hits to connect!
                 </div>
             `;
             ammoMetaAdvice = `
@@ -2336,7 +2366,7 @@
             tempMetaAdvice = `
                 <div style="margin-bottom:6px;">
                     <span class="badge" style="background:var(--accent-green); color:#000; font-size:10px;">MANDATORY SHUTDOWN TEMP</span> 
-                    <strong>Pepper Spray (-80% Enemy Dex):</strong> Completely invalidates evasion rogues, ensuring quick 10-turn stealth kills.
+                    <strong>Pepper Spray (-80% Enemy Dex) or Tear Gas (-67% Enemy Dex):</strong> Completely strips away enemy Dexterity, ensuring high-accuracy stealth kills.
                 </div>
             `;
             ammoMetaAdvice = `
@@ -2372,7 +2402,7 @@
             tempMetaAdvice = `
                 <div style="margin-bottom:6px;">
                     <span class="badge" style="background:var(--accent-orange); color:#000; font-size:10px;">BALANCED TEMP STRATEGY</span> 
-                    <strong>Flash Grenade / Smoke Grenade:</strong> Throw Flash against high-speed opponents or Smoke against high-strength opponents to tilt the duel instantly in your favor.
+                    <strong>Flash Grenade (-80% Spd) / Smoke (-67% Spd) / Pepper Spray (-80% Dex):</strong> Throw Flash/Smoke against fast opponents or Pepper Spray against high-dexterity rogues to tilt the duel instantly in your favor.
                 </div>
             `;
             ammoMetaAdvice = `
@@ -2383,7 +2413,7 @@
             archetypeTitle = '💨 Dexterity Rogue (The Elites / Dex Whore)';
             helmetAdvice = `
                 <div class="advice-item success">
-                    <strong>Tactical Riot Helmet (MANDATORY for Dex):</strong> Grants 100% immunity to <em>Pepper Spray (-80% Dex)</em> and <em>Tear Gas</em>. A single Pepper Spray ruins an evasion build without this helmet!
+                    <strong>Tactical Riot Helmet (MANDATORY for Dex):</strong> Reduces <em>Pepper Spray (-80% Dex)</em> and Tear Gas effects by ~50% and adds melee damage reduction — but does <em>not</em> block Flash Grenades. For full gas immunity, pair with a Delta Gas Mask or Welding Helmet.
                 </div>
             `;
             armorMetaAdvice = `
@@ -2409,7 +2439,7 @@
             tempMetaAdvice = `
                 <div style="margin-bottom:6px;">
                     <span class="badge" style="background:var(--accent-orange); color:#000; font-size:10px;">MANDATORY EVASION TEMPS</span> 
-                    <strong>Flash Grenade (-20% to -35% Enemy Speed):</strong> Keeps your evasion advantage intact against fast opponents.
+                    <strong>Flash Grenade (-80% Enemy Speed) or Smoke Grenade (-67% Enemy Speed):</strong> Keeps your evasion advantage intact against fast opponents by gutting their speed.
                 </div>
             `;
             ammoMetaAdvice = `
@@ -2429,7 +2459,7 @@
             if (weakest.name.includes('Assault')) {
                 armorAdviceHtml += `
                     <div class="advice-item">
-                        <strong>Solid Mid-High Tier Set:</strong> Your Assault pieces (${wArmor}+ armor) are solid. Next step over time is <strong>Combat Armor</strong> (higher base armor) or <strong>Vanguard / Marauder</strong>.
+                        <strong>Solid Mid-High Tier Set:</strong> Your Assault pieces (${wArmor}+ armor) are solid. Next step over time is higher tier sets like <strong>Dune, Vanguard, or Marauder</strong>.
                     </div>
                 `;
             } else {
@@ -2524,7 +2554,7 @@
         const def = bs.defense || 0;
         const spd = bs.speed || 0;
         const dex = bs.dexterity || 0;
-        const total = str + def + spd + dex;
+        const total = str + def + spd + dex || 1; // guard against 0 -> NaN percentages
 
         const goal = document.getElementById('goalSelector').value;
         const titleEl = document.getElementById('goalTitle');
@@ -2553,51 +2583,63 @@
         let specialNotes = '';
 
         if (goal === 'baldr_dex') {
-            titleEl.innerHTML = '💨 Baldr\'s Dex Whore (100 Dex : 80 Spd : 72 Str : 72 Def — 31% / 25% / 22% / 22%)';
-            targetPercents = { dex: 0.31, spd: 0.25, str: 0.22, def: 0.22 };
-            ratioLabel = '100 (Dex) : 80 (Spd) : 72 (Str) : 72 (Def)';
-            gymPathText = '• Dex Primary in The Elites (8.0 dots) • Spd Secondary in Frontline Fitness (7.5 dots) • Str & Def in George\'s Gym (7.3 dots).';
-            specialNotes = 'Dex Whore with Baldr safety: High evasion and specialist gym training, while keeping Def & Str at a resilient 22% baseline to prevent easy one-shots.';
+            titleEl.innerHTML = '💨 Baldr\'s Dex Whore (100 Dex : 80 Def : 72 Str : 72 Spd — ~30.9% / ~24.7% / ~22.2% / ~22.2%)';
+            targetPercents = { dex: 100/324, def: 80/324, str: 72/324, spd: 72/324 };
+            ratioLabel = '100 (Dex) : 80 (Def) : 72 (Str) : 72 (Spd)';
+            gymPathText = '• Dex Primary in The Elites (8.0 dots) • Def + Dex Combo in Balboa\'s Gym (7.5 dots) • Str & Spd in George\'s Gym (7.3 dots).';
+            specialNotes = 'Dex Whore with Baldr safety: Unlocks The Elites (Dex >= 1.25x Def) AND Balboa\'s Gym ((Def+Dex) >= 1.25x (Str+Spd)). High evasion with high defense baseline.';
 
         } else if (goal === 'baldr_def') {
-            titleEl.innerHTML = '🛡️ Baldr\'s Defense Tank (100 Def : 80 Str : 72 Spd : 72 Dex — 31% / 25% / 22% / 22%)';
-            targetPercents = { def: 0.31, str: 0.25, spd: 0.22, dex: 0.22 };
-            ratioLabel = '100 (Def) : 80 (Str) : 72 (Spd) : 72 (Dex)';
-            gymPathText = '• Def Primary in Mr. Isoyama\'s (8.0 dots) • Str Secondary in Frontline Fitness (7.5 dots) • Spd & Dex in George\'s Gym (7.3 dots).';
-            specialNotes = 'Def Tank with Baldr safety: Heavy damage mitigation in Isoyama, while preserving 22% Speed & Dexterity so your attacks still land reliably.';
+            titleEl.innerHTML = '🛡️ Baldr\'s Defense Tank (100 Def : 80 Dex : 72 Str : 72 Spd — ~30.9% / ~24.7% / ~22.2% / ~22.2%)';
+            targetPercents = { def: 100/324, dex: 80/324, str: 72/324, spd: 72/324 };
+            ratioLabel = '100 (Def) : 80 (Dex) : 72 (Str) : 72 (Spd)';
+            gymPathText = '• Def Primary in Mr. Isoyama\'s (8.0 dots) • Def + Dex Combo in Balboa\'s Gym (7.5 dots) • Str & Spd in George\'s Gym (7.3 dots).';
+            specialNotes = 'Def Tank with Baldr safety: Unlocks Mr. Isoyama\'s (Def >= 1.25x Dex) AND Balboa\'s Gym ((Def+Dex) >= 1.25x (Str+Spd)). Heavy damage mitigation.';
 
         } else if (goal === 'baldr_str') {
-            titleEl.innerHTML = '🏋️ Baldr\'s Strength Whore (100 Str : 80 Def : 72 Dex : 72 Spd — 31% / 25% / 22% / 22%)';
-            targetPercents = { str: 0.31, def: 0.25, dex: 0.22, spd: 0.22 };
-            ratioLabel = '100 (Str) : 80 (Def) : 72 (Dex) : 72 (Spd)';
-            gymPathText = '• Str Primary in Gym 3000 (8.0 dots) • Def Secondary in Balboa\'s Gym (7.5 dots) • Dex & Spd in George\'s Gym (7.3 dots).';
-            specialNotes = 'Knockout damage without a fatal speed liability: Crushes high-armor tanks while keeping enough Speed & Dex to evade opponents.';
+            titleEl.innerHTML = '🏋️ Baldr\'s Strength Whore (100 Str : 80 Spd : 72 Def : 72 Dex — ~30.9% / ~24.7% / ~22.2% / ~22.2%)';
+            targetPercents = { str: 100/324, spd: 80/324, def: 72/324, dex: 72/324 };
+            ratioLabel = '100 (Str) : 80 (Spd) : 72 (Def) : 72 (Dex)';
+            gymPathText = '• Str Primary in Gym 3000 (8.0 dots) • Str + Spd Combo in Frontline Fitness (7.5 dots) • Def & Dex in George\'s Gym (7.3 dots).';
+            specialNotes = 'Knockout damage with Baldr safety: Unlocks Gym 3000 (Str >= 1.25x Spd) AND Frontline Fitness ((Str+Spd) >= 1.25x (Def+Dex)). Huge punch with high speed.';
 
         } else if (goal === 'baldr_spd') {
-            titleEl.innerHTML = '⚡ Baldr\'s Speed Whore (100 Spd : 80 Def : 72 Dex : 72 Str — 31% / 25% / 22% / 22%)';
-            targetPercents = { spd: 0.31, def: 0.25, dex: 0.22, str: 0.22 };
-            ratioLabel = '100 (Spd) : 80 (Def) : 72 (Dex) : 72 (Str)';
-            gymPathText = '• Spd Primary in Total Rebound (8.0 dots) • Def Secondary in Balboa\'s Gym (7.5 dots) • Dex & Str in George\'s Gym (7.3 dots).';
-            specialNotes = 'Anti-Dex assassin with Baldr safety: Unlocks Total Rebound, hits 100% of Turn 1 attacks with stealth, while keeping high Def & Str.';
+            titleEl.innerHTML = '⚡ Baldr\'s Speed Whore (100 Spd : 80 Str : 72 Def : 72 Dex — ~30.9% / ~24.7% / ~22.2% / ~22.2%)';
+            targetPercents = { spd: 100/324, str: 80/324, def: 72/324, dex: 72/324 };
+            ratioLabel = '100 (Spd) : 80 (Str) : 72 (Def) : 72 (Dex)';
+            gymPathText = '• Spd Primary in Total Rebound (8.0 dots) • Str + Spd Combo in Frontline Fitness (7.5 dots) • Def & Dex in George\'s Gym (7.3 dots).';
+            specialNotes = 'Anti-Dex assassin with Baldr safety: Unlocks Total Rebound (Spd >= 1.25x Str) AND Frontline Fitness ((Str+Spd) >= 1.25x (Def+Dex)). Guaranteed 100% Turn 1 hit rate.';
 
         } else if (goal === 'baldr_ratio') {
-            titleEl.innerHTML = '⚖️ Baldr\'s Ratio (100 : 80 : 72 : 72 — 31% Primary / 25% Secondary / 22% & 22% Bottom)';
-            // Identify player's highest two stats as primary & secondary
+            titleEl.innerHTML = '⚖️ Baldr\'s Auto-Ratio (100 : 80 : 72 : 72 — 30.9% Primary / 24.7% Secondary / 22.2% & 22.2% Bottom)';
+            // Pick the best valid Baldr combo pair so the 7.5-dot combo gym stays unlocked:
+            // Balboa's Gym requires (Def + Dex); Frontline Fitness requires (Str + Spd).
+            const comboPairs = [
+                { keys: ['def', 'dex'], gym: "Balboa's Gym", sum: def + dex },
+                { keys: ['str', 'spd'], gym: 'Frontline Fitness', sum: str + spd }
+            ];
+            comboPairs.sort((a, b) => b.sum - a.sum);
+            const chosenCombo = comboPairs[0];
+
             const statPairs = [
                 { name: 'Strength', key: 'str', val: str },
                 { name: 'Defense', key: 'def', val: def },
                 { name: 'Speed', key: 'spd', val: spd },
                 { name: 'Dexterity', key: 'dex', val: dex }
-            ].sort((a, b) => b.val - a.val);
+            ];
+            const comboStats = statPairs.filter(sp => chosenCombo.keys.includes(sp.key)).sort((a, b) => b.val - a.val);
+            const primary = comboStats[0];
+            const secondary = comboStats[1];
+            const bottomPair = statPairs.filter(sp => !chosenCombo.keys.includes(sp.key));
 
-            targetPercents[statPairs[0].key] = 0.31;
-            targetPercents[statPairs[1].key] = 0.25;
-            targetPercents[statPairs[2].key] = 0.22;
-            targetPercents[statPairs[3].key] = 0.22;
+            targetPercents[primary.key] = 100/324;
+            targetPercents[secondary.key] = 80/324;
+            targetPercents[bottomPair[0].key] = 72/324;
+            targetPercents[bottomPair[1].key] = 72/324;
 
-            ratioLabel = `100 (${statPairs[0].name}) : 80 (${statPairs[1].name}) : 72 (${statPairs[2].name}) : 72 (${statPairs[3].name})`;
-            gymPathText = `1. Primary (${statPairs[0].name}) in 8.0-dot specialist gym • 2. Secondary (${statPairs[1].name}) in 7.5-dot combo gym (e.g. Frontline / Balboa's) • 3. Lower stats in George's Gym (7.3 dots).`;
-            specialNotes = `Baldr's build gives you high-dot specialist gym gains while keeping bottom two stats high enough (~22% each) that PvP opponents cannot easily exploit a weakness.`;
+            ratioLabel = `100 (${primary.name}) : 80 (${secondary.name}) : 72 (${bottomPair[0].name}) : 72 (${bottomPair[1].name})`;
+            gymPathText = `1. Primary (${primary.name}) in 8.0-dot specialist gym • 2. Secondary (${secondary.name}) in ${chosenCombo.gym} (7.5-dot combo gym) • 3. Lower stats in George's Gym (7.3 dots).`;
+            specialNotes = `Baldr's build unlocks 8.0-dot and 7.5-dot gyms without dumping stats, keeping bottom two stats at ~22.2% each so opponents cannot easily exploit a weakness.`;
 
         } else if (goal === 'pure_balanced') {
             titleEl.innerHTML = '🛡️ Pure Balanced Titan (1 : 1 : 1 : 1 — Equal 25% All Stats)';
@@ -2786,20 +2828,13 @@
         updateQuickNextBuy(globalPlayerData, globalEquipment);
     }
 
-        // Export key methods to window & unsafeWindow
+        // Export key methods to window
         window.startAnalysis = startAnalysis;
         window.copyDiscordSummary = copyDiscordSummary;
         window.scanActiveWarRoster = scanActiveWarRoster;
         window.scoutEnemy = scoutEnemy;
         window.updateGoalRoadmap = updateGoalRoadmap;
         window.switchTwaTab = switchTwaTab;
-
-        targetWindow.startAnalysis = startAnalysis;
-        targetWindow.copyDiscordSummary = copyDiscordSummary;
-        targetWindow.scanActiveWarRoster = scanActiveWarRoster;
-        targetWindow.scoutEnemy = scoutEnemy;
-        targetWindow.updateGoalRoadmap = updateGoalRoadmap;
-        targetWindow.switchTwaTab = switchTwaTab;
 
         // Explicitly attach event listeners to tab buttons
         ['war', 'gym', 'gear', 'merits', 'economy'].forEach(tabKey => {
@@ -2839,6 +2874,32 @@
             warScanBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 scanActiveWarRoster();
+            });
+        }
+
+        // Discord war-card copy button (inline onclick removed for sandbox safety)
+        const copyDiscordBtn = document.getElementById('copyDiscordBtn');
+        if (copyDiscordBtn) {
+            copyDiscordBtn.onclick = null;
+            copyDiscordBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                copyDiscordSummary();
+            });
+        }
+
+        // Delegated listener for dynamic "Strategy" buttons in the War Target Scanner
+        const warRosterContainer = document.getElementById('warRosterContainer');
+        if (warRosterContainer) {
+            warRosterContainer.addEventListener('click', (e) => {
+                const btn = e.target.closest('.twa-strategy-btn');
+                if (!btn) return;
+                const enemyId = btn.getAttribute('data-enemy-id');
+                if (!enemyId) return;
+                const idInput = document.getElementById('enemyIdInput');
+                if (idInput) idInput.value = enemyId;
+                scoutEnemy();
+                const resultEl = document.getElementById('enemyScoutResult');
+                if (resultEl) resultEl.scrollIntoView({ behavior: 'smooth' });
             });
         }
 
